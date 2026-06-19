@@ -1,0 +1,12 @@
+{
+  /* Hereda de tsconfig.json base */
+  "extends": "./tsconfig.json",   
+  "compilerOptions": {
+    /* Salida */
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noEmit": false,
+    "noEmitOnError": true
+  },
+  "include": ["src/**/*"]
+}
