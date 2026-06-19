@@ -10,15 +10,16 @@ import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { env } from './config/env.js';
 
-
 const app: Application = express();
 
 // Seguridad
 app.use(helmet());
 // CORS
-app.use(cors({
+app.use(
+  cors({
     origin: env.CORS_ORIGIN,
-}));
+  }),
+);
 // Parseo body
 app.use(express.json());
 
@@ -26,9 +27,9 @@ app.use(express.json());
 app.use('/api', routes);
 
 // Manejo de rutas no encontradas (404)
-app.use(notFound)
+app.use(notFound);
 
 // Manejo de errores generícos (500)
-app.use(errorHandler)
+app.use(errorHandler);
 
 export default app;

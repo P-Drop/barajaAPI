@@ -1,3 +1,1 @@
-import request from 'supertest'
-
-it.todo('implementar endpoints de cartas')
+it.todo('implementar endpoints de cartas');

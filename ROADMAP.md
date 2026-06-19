@@ -8,6 +8,7 @@
 - **Hito**: Monorepo con Clean Architecture, calidad de código y CI básico.
 
 #### Entregables:
+
 - [x] Estructura base (Clean Architecture) y testing e2e (Health Check / liveness).
 - [x] Stack moderno: ESM + TypeScript, Vitest + Supertest.
 - [x] Seguridad base (helmet, CORS) y variables de entorno (dotenv).
@@ -23,6 +24,7 @@
 - **Hito**: API funcional que devuelve representaciones estandarizadas de la baraja española de 48 cartas + 2 comodines (50), con opción de servir la baraja corta de 40 (sin ochos, nueves ni comodines) para los juegos que la requieran.
 
 #### Entregables:
+
 - [ ] **Diseño de datos**: esquema de base de datos para los palos (Oros, Copas, Espadas, Bastos) y sus valores.
 - [ ] **Endpoints core** (versionados bajo `/api/v1`):
   - [ ] Obtener la baraja completa (40 ó 48+2 según parámetro).
@@ -38,6 +40,7 @@
 - **Hito**: API pública, segura y consumible a través de internet.
 
 #### Entregables:
+
 - [ ] Pipeline de **despliegue continuo (CD)** en GitHub Actions, sobre el CI ya establecido en la Fase 0.
 - [ ] Base de datos de producción aprovisionada.
 - [ ] Servidor desplegado con dominio y certificado de seguridad (SSL/HTTPS).
@@ -49,6 +52,7 @@
 - **Hito**: Aplicación web desplegada donde un usuario pueda ver y manipular la baraja.
 
 #### Entregables:
+
 - [ ] Configuración de la app de React/Vue dentro del monorepo.
 - [ ] Catálogo visual de cartas (assets gráficos de la baraja).
 - [ ] Interfaz para visualizar la baraja, "Barajar" con un clic y ver el resultado consumiendo los endpoints de la Fase 1.
@@ -59,6 +63,7 @@
 - **Hito**: Panel de control del estado del sistema.
 
 #### Entregables:
+
 - [ ] Trazabilidad de peticiones (saber qué endpoint se usa más), ampliando el logger de la Fase 1.
 - [ ] Registro de errores centralizado para detectar fallos en vivo.
 - [ ] Métricas de uso (¿cuántas barajas se generan al día?).
@@ -69,6 +74,7 @@
 - **Hito**: Primer juego clásico completamente jugable a través de la API y el frontend.
 
 #### Entregables:
+
 - [ ] Gestor de sesiones/partidas (crear sala, unir jugadores).
 - [ ] Máquina de estados para reglas de juego (turnos, puntuación).
 - [ ] Comunicación en tiempo real (WebSockets) para multijugador.
