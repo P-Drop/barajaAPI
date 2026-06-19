@@ -1,3 +1,12 @@
+---
+name: Tarea
+about: Plantilla genérica para tareas del proyecto
+title: ''
+labels: []
+assignees: []
+---
+
+
 ## Contexto
 Breve descripción del problema o la necesidad
 
