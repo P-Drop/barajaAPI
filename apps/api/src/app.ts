@@ -8,6 +8,7 @@ import routes from './routes/index.js';
 
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { env } from './config/env.js';
 
 
 const app: Application = express();
@@ -16,7 +17,7 @@ const app: Application = express();
 app.use(helmet());
 // CORS
 app.use(cors({
-    origin: process.env.CORS_ORIGIN ?? '*',
+    origin: env.CORS_ORIGIN,
 }));
 // Parseo body
 app.use(express.json());
