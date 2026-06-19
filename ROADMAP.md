@@ -2,7 +2,7 @@
 
 > Estados: ✅ Completado · ▶️ En progreso · ⏳ Planificado
 
-## Fase 0: Cimientos y Configuración Inicial ▶️
+## Fase 0: Cimientos y Configuración Inicial ✅
 
 - **Objetivo**: Establecer un entorno de trabajo profesional y predecible.
 - **Hito**: Monorepo con Clean Architecture, calidad de código y CI básico.
@@ -13,12 +13,13 @@
 - [x] Stack moderno: ESM + TypeScript, Vitest + Supertest.
 - [x] Seguridad base (helmet, CORS) y variables de entorno (dotenv).
 - [x] Documentación inicial (README) y plantillas de PR/Issue.
-- [ ] Validación de variables de entorno con Zod.
-- [ ] Linter y formateador (ESLint + Prettier).
-- [ ] CI básico en GitHub Actions (lint + test + build en cada PR).
-- [ ] Tablero de proyecto y protección de la rama `main` (merge solo con CI en verde).
+- [x] Validación de variables de entorno con Zod.
+- [x] Linter y formateador (ESLint + Prettier).
+- [x] CI básico en GitHub Actions (lint + test + build en cada PR).
+- [x] Tablero de proyecto
+- [ ] Protección de la rama `main` -- aplazada (requiere repo público o GitHub Pro).
 
-## Fase 1: Core API & MVP de la Baraja ⏳
+## Fase 1: Core API & MVP de la Baraja ▶️
 
 - **Objetivo**: Construir la lógica de negocio central. La API debe ser capaz de servir, barajar y entregar cartas sin lógica de juegos específicos todavía.
 - **Hito**: API funcional que devuelve representaciones estandarizadas de la baraja española de 48 cartas + 2 comodines (50), con opción de servir la baraja corta de 40 (sin ochos, nueves ni comodines) para los juegos que la requieran.

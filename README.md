@@ -9,7 +9,10 @@ API REST de la baraja española. 🚧 Proyecto en desarrollo.
 - Vitest + Supertest (testing)
 - Helmet y CORS (seguridad)
 - dotenv (variables de entorno)
-- PostgreSQL (`pg`) y Zod — previstos para próximas fases
+- Zod (validación de variables de entorno)
+- ESLint + Prettier (calidad de código)
+- GitHub Actions (CI)
+- PostgreSQL (`pg`) — planificado para Fase 1
 
 ## Requisitos
 
@@ -37,13 +40,16 @@ npm install
 
 Se ejecutan dentro de `apps/api` (o desde la raíz con -w api):
 
-| **Script**           | **Qué hace**                                    |
-| -------------------- | ----------------------------------------------- |
-| `npm run dev`        | Levanta el servidor en desarrollo (con recarga) |
-| `npm run build`      | Compila TypeScript a `dist/`                    |
-| `npm start`          | Arranca el servidor ya compilado                |
-| `npm test`           | Ejecuta los tests una vez                       |
-| `npm run test:watch` | Ejecuta los tests en modo watch                 |
+| **Script**             | **Qué hace**                                    |
+| ---------------------- | ----------------------------------------------- |
+| `npm run dev`          | Levanta el servidor en desarrollo (con recarga) |
+| `npm run build`        | Compila TypeScript a `dist/`                    |
+| `npm start`            | Arranca el servidor ya compilado                |
+| `npm test`             | Ejecuta los tests una vez                       |
+| `npm run test:watch`   | Ejecuta los tests en modo watch                 |
+| `npm run lint`         | Analiza el código con ESLint                    |
+| `npm run format`       | Formatea el código con Prettier                 |
+| `npm run format:check` | Verifica el formato (utilizado en CI)           |
 
 Ejemplo:
 
