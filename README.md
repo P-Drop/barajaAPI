@@ -28,22 +28,22 @@ npm install
 
 `cp apps/api/.env.example apps/api/.env`
 
-| **Variable** | **Descripción** | **Por defecto** |
-| --- | --- | --- |
-| `PORT` | Puerto del servidor | `3000` |
-| `CORS_ORIGIN` | Origen permitido para CORS | `*` |
+| **Variable**  | **Descripción**            | **Por defecto** |
+| ------------- | -------------------------- | --------------- |
+| `PORT`        | Puerto del servidor        | `3000`          |
+| `CORS_ORIGIN` | Origen permitido para CORS | `*`             |
 
 ## Scripts
 
 Se ejecutan dentro de `apps/api` (o desde la raíz con -w api):
 
-| **Script** | **Qué hace** |
-| --- | --- |
-| `npm run dev` | Levanta el servidor en desarrollo (con recarga) |
-| `npm run build` | Compila TypeScript a `dist/` |
-| `npm start` | Arranca el servidor ya compilado |
-| `npm test` | Ejecuta los tests una vez |
-| `npm run test:watch` | Ejecuta los tests en modo watch |
+| **Script**           | **Qué hace**                                    |
+| -------------------- | ----------------------------------------------- |
+| `npm run dev`        | Levanta el servidor en desarrollo (con recarga) |
+| `npm run build`      | Compila TypeScript a `dist/`                    |
+| `npm start`          | Arranca el servidor ya compilado                |
+| `npm test`           | Ejecuta los tests una vez                       |
+| `npm run test:watch` | Ejecuta los tests en modo watch                 |
 
 Ejemplo:
 
@@ -87,4 +87,3 @@ apps/api/src/
 cd apps/api
 npm test
 ```
-

@@ -1,6 +1,6 @@
 {
   /* Hereda de tsconfig.json base */
-  "extends": "./tsconfig.json",   
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     /* Salida */
     "outDir": "./dist",
