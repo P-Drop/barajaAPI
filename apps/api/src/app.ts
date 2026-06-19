@@ -1,7 +1,12 @@
 import express from 'express';
-import type { Application, Request, Response } from 'express';
+
+import type { Application } from 'express';
 import cors from 'cors';
+
 import routes from './routes/index.js';
+
+import { notFound } from './middlewares/notFound.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 const app: Application = express();
 
@@ -13,8 +18,9 @@ app.use(express.json());
 app.use('/api', routes);
 
 // Manejo de rutas no encontradas (404)
-app.use((req: Request, res: Response) => {
-    res.status(404).json({ error: 'Ruta no encontrada' });
-})
+app.use(notFound)
+
+// Manejo de errores generícos (500)
+app.use(errorHandler)
 
 export default app;

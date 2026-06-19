@@ -1,14 +1,10 @@
 import { Router } from 'express';
-import type { Request, Response } from 'express';
+
+import healthRoutes from './healthRoutes.js'
 
 const router = Router();
 
 // Endpoint de comprobación (Health Check)
-router.get('/health', (req: Request, res: Response) => {
-    res.status(200).json({
-        status: "OK",
-        message: "Hello World! API funcionando correctamente."
-    })
-})
+router.use('/health', healthRoutes)
 
 export default router;
