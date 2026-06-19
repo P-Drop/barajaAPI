@@ -41,7 +41,7 @@ npm install
 Se ejecutan dentro de `apps/api` (o desde la raíz con -w api):
 
 | **Script**             | **Qué hace**                                    |
-| --------------------   | ----------------------------------------------- |
+| ---------------------- | ----------------------------------------------- |
 | `npm run dev`          | Levanta el servidor en desarrollo (con recarga) |
 | `npm run build`        | Compila TypeScript a `dist/`                    |
 | `npm start`            | Arranca el servidor ya compilado                |
@@ -50,7 +50,6 @@ Se ejecutan dentro de `apps/api` (o desde la raíz con -w api):
 | `npm run lint`         | Analiza el código con ESLint                    |
 | `npm run format`       | Formatea el código con Prettier                 |
 | `npm run format:check` | Verifica el formato (utilizado en CI)           |
-
 
 Ejemplo:
 
