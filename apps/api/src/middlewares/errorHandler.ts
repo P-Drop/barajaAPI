@@ -3,6 +3,8 @@ import type { Request, Response, NextFunction } from 'express';
 import { z, ZodError } from 'zod';
 import { DomainError } from '../errors/DomainError.js';
 
+// import { logger } from '../config/logger.js';
+
 export const errorHandler = (
   err: Error,
   req: Request,
@@ -22,7 +24,7 @@ export const errorHandler = (
   }
 
   // Error genérico
-  console.error(err.stack); // TODO: sustituir por logger
+  req.log.error({ err }, 'Error no controlado');
   res.status(500).json({
     error: 'Error interno del servidor',
   });
