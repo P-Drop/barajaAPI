@@ -20,6 +20,10 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Generar cliente Prisma
+        run: npx prisma generate
+        working-directory: apps/api
+
       - name: Lint
         run: npm run lint
 
