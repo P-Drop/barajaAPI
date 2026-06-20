@@ -13,3 +13,20 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Suit {
+  OROS
+  COPAS
+  ESPADAS
+  BASTOS
+}
+
+model Card {
+  id        Int       @id @default(autoincrement())
+  value     Int?
+  suit      Suit?
+  isJoker   Boolean   @default(false)
+  name      String
+    
+  @@unique([suit, value])
+}
