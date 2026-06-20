@@ -3,7 +3,7 @@ import { prisma } from '../db/prisma.js';
 export const cardRepository = {
   findFullDeck: () => {
     return prisma.card.findMany({
-      orderBy: [{ suit: 'desc' }, { value: 'asc' }],
+      orderBy: [{ suit: { sort: 'desc', nulls: 'last' } }, { value: 'asc' }],
     });
   },
 
