@@ -32,5 +32,11 @@
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.4",
     "typescript-eslint": "^8.61.1"
+  },
+  "allowScripts": {
+    "prisma@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "@prisma/client@6.19.3": true,
+    "esbuild@0.28.1": true
   }
 }
