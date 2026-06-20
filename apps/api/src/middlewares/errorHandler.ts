@@ -3,8 +3,6 @@ import type { Request, Response, NextFunction } from 'express';
 import { z, ZodError } from 'zod';
 import { DomainError } from '../errors/DomainError.js';
 
-// import { logger } from '../config/logger.js';
-
 export const errorHandler = (
   err: Error,
   req: Request,
