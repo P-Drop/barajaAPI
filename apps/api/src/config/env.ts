@@ -8,6 +8,12 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   CORS_ORIGIN: z.string().default('*'),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL es obligatoria'),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
+  LOG_LEVEL: z
+    .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
+    .default('info'),
 });
 
 const parsed = envSchema.safeParse(process.env);

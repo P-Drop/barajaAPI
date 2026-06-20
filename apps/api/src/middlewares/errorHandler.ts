@@ -22,7 +22,7 @@ export const errorHandler = (
   }
 
   // Error genérico
-  console.error(err.stack); // TODO: sustituir por logger
+  req.log.error({ err }, 'Error no controlado');
   res.status(500).json({
     error: 'Error interno del servidor',
   });

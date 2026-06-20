@@ -5,14 +5,16 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 import swaggerUi from 'swagger-ui-express';
+import { openApiDocument } from './docs/openapi.js';
+
+import { pinoHttp } from 'pino-http';
+import { logger } from './config/logger.js';
 
 import routes from './routes/index.js';
 
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { env } from './config/env.js';
-
-import { openApiDocument } from './docs/openapi.js';
 
 const app: Application = express();
 
@@ -26,6 +28,9 @@ app.use(
 );
 // Parseo body
 app.use(express.json());
+
+// Logger
+app.use(pinoHttp({ logger }));
 
 // Documentación OpenAPI
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
