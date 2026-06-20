@@ -34,6 +34,7 @@
 - [ ] **Health check de readiness**: endpoint que verifica la conexión a PostgreSQL (`SELECT 1`), separado del liveness de la Fase 0.
 - [ ] **Logger estructurado básico**: reemplazar los `console.*` por un logger (p. ej. pino). La analítica avanzada queda para la Fase 4.
 - [ ] **Documentación**: especificación de la API (Swagger/OpenAPI) para los consumidores.
+- [ ] **Test & debug**: test de integración con BD real y edge cases.
 
 ## Fase 2: Despliegue Profesional (Go-to-Market de la API) ⏳
 
