@@ -11,6 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +40,14 @@ jobs:
         run: npx prisma generate
         working-directory: apps/api
 
+      - name: Aplicar migraciones
+        run: npx prisma migrate deploy
+        working-directory: apps/api
+
+      - name: Sembrar la base de datos
+        run: npx prisma db seed
+        working-directory: apps/api
+
       - name: Lint
         run: npm run lint
 
@@ -34,6 +56,9 @@ jobs:
 
       - name: Tests
         run: npm test -w api
+
+      - name: Tests de integración
+        run: npm run test:integration -w api
 
       - name: Build
         run: npm run build -w api

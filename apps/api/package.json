@@ -8,7 +8,8 @@
     "build": "prisma generate && rm -rf dist && tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
     "clean": "rm -rf dist",
-    "test": "vitest run",
+    "test": "vitest run tests/e2e",
+    "test:integration": "vitest run tests/integration",
     "test:watch": "vitest"
   },
   "keywords": [],
