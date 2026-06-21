@@ -1,7 +1,8 @@
 # barajaAPI
+
 ![CI](https://github.com/P-Drop/barajaAPI/actions/workflows/ci.yml/badge.svg)
 
-API REST de la baraja española. 
+API REST de la baraja española.
 
 🚧 Proyecto en desarrollo [ROADMAP](./ROADMAP.md).
 
@@ -37,32 +38,30 @@ npm install
 
 `cp apps/api/.env.example apps/api/.env`
 
-| Variable        | Descripción                          |
-| --------------- | ------------------------------------ |
-| DATABASE_URL    | Cadena de conexión a PostgreSQL      |
-| PORT            | Puerto del servidor (3000)           |
-| CORS_ORIGIN     | Origen permitido (* en dev)          |
-| NODE_ENV        | development / production / test       |
-| LOG_LEVEL       | Nivel de pino (info por defecto)     |
-| POSTGRES_*      | (raíz) credenciales del contenedor   |
-
+| Variable     | Descripción                        |
+| ------------ | ---------------------------------- |
+| DATABASE_URL | Cadena de conexión a PostgreSQL    |
+| PORT         | Puerto del servidor (3000)         |
+| CORS_ORIGIN  | Origen permitido (\* en dev)       |
+| NODE_ENV     | development / production / test    |
+| LOG_LEVEL    | Nivel de pino (info por defecto)   |
+| POSTGRES\_\* | (raíz) credenciales del contenedor |
 
 ## Scripts
 
 Se ejecutan dentro de `apps/api` (o desde la raíz con -w api):
 
-| **Script**             | **Qué hace**                                    |
-| ---------------------- | ----------------------------------------------- |
-| `npm run dev`          | Levanta el servidor en desarrollo (con recarga) |
-| `npm run build`        | Compila TypeScript a `dist/`                    |
-| `npm start`            | Arranca el servidor ya compilado                |
-| `npm test`             | Ejecuta los tests una vez                       |
-| `npm run test:watch`   | Ejecuta los tests en modo watch                 |
-| `npm run lint`         | Analiza el código con ESLint                    |
-| `npm run format`       | Formatea el código con Prettier                 |
-| `npm run format:check` | Verifica el formato (utilizado en CI)           |
-| `npm run test:integration` | Tests contra la BD real (requiere Docker) |
-
+| **Script**                 | **Qué hace**                                    |
+| -------------------------- | ----------------------------------------------- |
+| `npm run dev`              | Levanta el servidor en desarrollo (con recarga) |
+| `npm run build`            | Compila TypeScript a `dist/`                    |
+| `npm start`                | Arranca el servidor ya compilado                |
+| `npm test`                 | Ejecuta los tests una vez                       |
+| `npm run test:watch`       | Ejecuta los tests en modo watch                 |
+| `npm run lint`             | Analiza el código con ESLint                    |
+| `npm run format`           | Formatea el código con Prettier                 |
+| `npm run format:check`     | Verifica el formato (utilizado en CI)           |
+| `npm run test:integration` | Tests contra la BD real (requiere Docker)       |
 
 Ejemplo:
 
@@ -85,9 +84,7 @@ npx prisma migrate deploy && npx prisma db seed
 npm run dev
 ```
 
-
 ## Endpoints
-
 
 Comprueba que la API está funcionando:
 
@@ -101,7 +98,6 @@ Operaciones:
 - `GET /api/v1/deck/draw?count=N` — robar N cartas
 
 📖 Documentación interactiva (Swagger): http://localhost:3000/api/docs
-
 
 ## Estructura del proyecto
 
@@ -141,4 +137,3 @@ npm test
 docker compose up -d
 npm run test:integration
 ```
-
