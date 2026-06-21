@@ -53,6 +53,7 @@ beforeEach(() => {
 });
 
 describe('Tests suite for Deck v1 API', () => {
+  // GET /api/v1/deck
   it('Se obtiene la baraja completa, con status 200 y cada carta trae su image', async () => {
     const response = await request(app).get('/api/v1/deck');
 
@@ -70,6 +71,7 @@ describe('Tests suite for Deck v1 API', () => {
     expect(asOros!.image).toBe('oros_1.png');
   });
 
+  // GET /api/vi/deck?short=true
   it('Obtener baraja reducida (findShortDeck) con parametro short=true', async () => {
     const response = await request(app).get('/api/v1/deck?short=true');
 
@@ -79,6 +81,7 @@ describe('Tests suite for Deck v1 API', () => {
     expect(cardRepository.findFullDeck).not.toHaveBeenCalled();
   });
 
+  // GET /api/v1/deck/draw?count=2
   it('Robar (/deck/draw) con count=2 con status 200 y devuelve dos cartas', async () => {
     const response = await request(app).get('/api/v1/deck/draw?count=2');
 
@@ -86,6 +89,7 @@ describe('Tests suite for Deck v1 API', () => {
     expect(response.body).toHaveLength(2);
   });
 
+  // DomainError
   it('Error 400: Bad Request -> DomainError cuando se intentan robar demasiadas cartas', async () => {
     const response = await request(app).get('/api/v1/deck/draw?count=999');
 
@@ -95,18 +99,24 @@ describe('Tests suite for Deck v1 API', () => {
     );
   });
 
-  it('Error 400: Bad Request -> Validación del tipado de los parámetros', async () => {
-    const response = await request(app).get('/api/v1/deck/draw?count=abc');
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body.error).toBe('Parámetros inválidos');
-    expect(response.body).toHaveProperty('details');
-  });
-
+  // GET /api/v1/deck/shuffle
   it('barajar devuelve el mismo conjunto de cartas (status 200)', async () => {
     const response = await request(app).get('/api/v1/deck/shuffle');
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveLength(fakeDeck.length);
+  });
+
+  // Edge cases -> Zod Error
+  it.each([
+    ['count = 0', '/api/v1/deck/draw?count=0'],
+    ['count negativo', '/api/v1/deck/draw?count=-5'],
+    ['count decimal', '/api/v1/deck/draw?count=2.5'],
+    ['count no numérico', '/api/v1/deck/draw?count=abc'],
+    ['short inválido', '/api/v1/deck?short=xyz'],
+  ])('400 ante entrada inválida: %s', async (_caso, url) => {
+    const res = await request(app).get(url);
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Parámetros inválidos'); // Zod error
   });
 });
