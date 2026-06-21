@@ -1,6 +1,9 @@
 # barajaAPI
+![CI](https://github.com/P-Drop/barajaAPI/actions/workflows/ci.yml/badge.svg)
 
-API REST de la baraja española. 🚧 Proyecto en desarrollo.
+API REST de la baraja española. 
+
+🚧 Proyecto en desarrollo [ROADMAP](./ROADMAP.md).
 
 ## Tecnologías
 
@@ -12,7 +15,10 @@ API REST de la baraja española. 🚧 Proyecto en desarrollo.
 - Zod (validación de variables de entorno)
 - ESLint + Prettier (calidad de código)
 - GitHub Actions (CI)
-- PostgreSQL (`pg`) — planificado para Fase 1
+- PostgreSQL
+- Prisma (ORM)
+- pino (logging)
+- OpenAPI / Swagger (docs)
 
 ## Requisitos
 
@@ -31,10 +37,15 @@ npm install
 
 `cp apps/api/.env.example apps/api/.env`
 
-| **Variable**  | **Descripción**            | **Por defecto** |
-| ------------- | -------------------------- | --------------- |
-| `PORT`        | Puerto del servidor        | `3000`          |
-| `CORS_ORIGIN` | Origen permitido para CORS | `*`             |
+| Variable        | Descripción                          |
+| --------------- | ------------------------------------ |
+| DATABASE_URL    | Cadena de conexión a PostgreSQL      |
+| PORT            | Puerto del servidor (3000)           |
+| CORS_ORIGIN     | Origen permitido (* en dev)          |
+| NODE_ENV        | development / production / test       |
+| LOG_LEVEL       | Nivel de pino (info por defecto)     |
+| POSTGRES_*      | (raíz) credenciales del contenedor   |
+
 
 ## Scripts
 
@@ -50,6 +61,8 @@ Se ejecutan dentro de `apps/api` (o desde la raíz con -w api):
 | `npm run lint`         | Analiza el código con ESLint                    |
 | `npm run format`       | Formatea el código con Prettier                 |
 | `npm run format:check` | Verifica el formato (utilizado en CI)           |
+| `npm run test:integration` | Tests contra la BD real (requiere Docker) |
+
 
 Ejemplo:
 
@@ -58,38 +71,74 @@ cd apps/api
 npm run dev
 ```
 
-## Endpoints
-
-**`GET /api/health`**
-
-Comprueba que la API está funcionando.
-Respuesta:
+## Desarrollo (con Docker):
 
 ```bash
-{
-    "status": "OK",
-    "message": "Hello World! API funcionando correctamente.",
-    "timestamp": "2026-06-19T09:35:55.575Z"
-}
+# 1. Levantar PostgreSQL
+docker compose up -d
+
+# 2. Migrar y sembrar
+cd apps/api
+npx prisma migrate deploy && npx prisma db seed
+
+# 3. Arrancar en modo desarrollo (logs legibles)
+npm run dev
 ```
+
+
+## Endpoints
+
+
+Comprueba que la API está funcionando:
+
+- `GET /api/health` — liveness
+- `GET /api/health/ready` — readiness
+
+Operaciones:
+
+- `GET /api/v1/deck` — baraja (`?short=true` para la de 40)
+- `GET /api/v1/deck/shuffle` — baraja barajada
+- `GET /api/v1/deck/draw?count=N` — robar N cartas
+
+📖 Documentación interactiva (Swagger): http://localhost:3000/api/docs
+
 
 ## Estructura del proyecto
 
 ```bash
-apps/api/src/
-├─ config/        # configuración (variables de entorno)
-├─ controllers/   # lógica de cada endpoint
-├─ routes/        # definición de rutas
-├─ middlewares/   # manejo de errores y 404
-├─ services/      # lógica de negocio (en construcción)
-├─ repositories/  # acceso a datos (en construcción)
-├─ app.ts         # configuración de Express
-└─ server.ts      # arranque del servidor
+apps/api/
+├─ prisma/
+│  ├─ migrations/        # migraciones (forward-only)
+│  ├─ schema.prisma      # modelo de datos (enum Suit, Card)
+│  └─ seed.ts            # siembra las 50 cartas
+├─ src/
+│  ├─ config/            # env (Zod) y logger (pino)
+│  ├─ controllers/       # handlers HTTP (card, health)
+│  ├─ db/                # cliente Prisma
+│  ├─ docs/              # OpenAPI (registry + generación)
+│  ├─ errors/            # DomainError
+│  ├─ middlewares/       # errorHandler, notFound
+│  ├─ repositories/      # acceso a datos (Prisma)
+│  ├─ routes/            # agregador + card + health
+│  ├─ schemas/           # schemas Zod (validan y documentan)
+│  ├─ services/          # lógica (barajar, robar)
+│  ├─ validators/        # validación de query
+│  ├─ app.ts             # configuración de Express
+│  └─ server.ts          # arranque
+└─ tests/
+   ├─ e2e/               # tests mockeados (rápidos, sin BD)
+   └─ integration/       # tests contra BD real
+
 ```
 
 ## Tests
 
 ```bash
-cd apps/api
+# Tests mockeados (rápidos, sin BD)
 npm test
+
+# Tests de integración (requieren Postgres)
+docker compose up -d
+npm run test:integration
 ```
+
