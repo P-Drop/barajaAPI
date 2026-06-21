@@ -1,0 +1,19 @@
+# Dependencias
+node_modules
+**/node_modules
+
+# Artefactos que se regeneran en el build
+dist
+**/dist
+**/src/generated
+
+# Secretos y entornos locales
+.env
+.env.*
+!**/.env.example
+
+# VCS y misc
+.git
+.gitignore
+*.log
+.vscode
