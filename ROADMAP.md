@@ -19,34 +19,36 @@
 - [x] Tablero de proyecto
 - [ ] Protección de la rama `main` -- aplazada (requiere repo público o GitHub Pro).
 
-## Fase 1: Core API & MVP de la Baraja ▶️
+## Fase 1: Core API & MVP de la Baraja ✅
 
 - **Objetivo**: Construir la lógica de negocio central. La API debe ser capaz de servir, barajar y entregar cartas sin lógica de juegos específicos todavía.
 - **Hito**: API funcional que devuelve representaciones estandarizadas de la baraja española de 48 cartas + 2 comodines (50), con opción de servir la baraja corta de 40 (sin ochos, nueves ni comodines) para los juegos que la requieran.
 
 #### Entregables:
 
-- [ ] **Diseño de datos**: esquema de base de datos para los palos (Oros, Copas, Espadas, Bastos) y sus valores.
-- [ ] **Endpoints core** (versionados bajo `/api/v1`):
-  - [ ] Obtener la baraja completa (40 ó 48+2 según parámetro).
-  - [ ] Barajar y obtener un mazo aleatorio.
-  - [ ] Robar N cartas de un mazo.
-- [ ] **Health check de readiness**: endpoint que verifica la conexión a PostgreSQL (`SELECT 1`), separado del liveness de la Fase 0.
-- [ ] **Logger estructurado básico**: reemplazar los `console.*` por un logger (p. ej. pino). La analítica avanzada queda para la Fase 4.
-- [ ] **Documentación**: especificación de la API (Swagger/OpenAPI) para los consumidores.
-- [ ] **Test & debug**: test de integración con BD real y edge cases.
+- [x] **Diseño de datos**: esquema de base de datos para los palos (Oros, Copas, Espadas, Bastos) y sus valores.
+- [x] **Endpoints core** (versionados bajo `/api/v1`):
+  - [x] Obtener la baraja completa (40 ó 48+2 según parámetro).
+  - [x] Barajar y obtener un mazo aleatorio.
+  - [x] Robar N cartas de un mazo.
+- [x] **Health check de readiness**: endpoint que verifica la conexión a PostgreSQL (`SELECT 1`), separado del liveness de la Fase 0.
+- [x] **Logger estructurado básico**: reemplazar los `console.*` por un logger (p. ej. pino). La analítica avanzada queda para la Fase 4.
+- [x] **Documentación**: especificación de la API (Swagger/OpenAPI) para los consumidores.
+- [x] **Test & debug**: test de integración con BD real y edge cases.
 
-## Fase 2: Despliegue Profesional (Go-to-Market de la API) ⏳
+## Fase 2: Despliegue Profesional (Go-to-Market de la API) ▶️
 
 - **Objetivo**: Sacar el producto del entorno local y hacerlo accesible y seguro en la nube.
 - **Hito**: API pública, segura y consumible a través de internet.
 
 #### Entregables:
 
-- [ ] Pipeline de **despliegue continuo (CD)** en GitHub Actions, sobre el CI ya establecido en la Fase 0.
+- [ ] Pipeline de **despliegue continuo (CD)** en GitHub Actions.
 - [ ] Base de datos de producción aprovisionada.
 - [ ] Servidor desplegado con dominio y certificado de seguridad (SSL/HTTPS).
 - [ ] Limitación de peticiones (Rate Limiting) para evitar abusos en producción.
+- [ ] PRs automáticos de dependencias (Dependabot o Renovate)
+- [ ] CHANGELOG y versionado semántico (releases)
 
 ## Fase 3: Interfaz Visual (Frontend MVP) ⏳
 
