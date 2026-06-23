@@ -18,6 +18,10 @@ RUN npm ci
 # Código
 COPY . .
 
+# Placeholder SOLO para que `prisma generate` resuelva el datasource en build
+# No conecta a ninguna BS; la DATABASE_URL real se inyecta en runtime.
+ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
+
 # Script de build
 RUN npm run build -w api
 
