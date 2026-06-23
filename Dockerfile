@@ -4,7 +4,7 @@
 FROM node:24-slim AS build
 WORKDIR /app
 
-# TSL Prisma-Supabase: openssl y ca-certificates
+# TLS Prisma-Supabase: openssl y ca-certificates
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
@@ -19,7 +19,7 @@ RUN npm ci
 COPY . .
 
 # Placeholder SOLO para que `prisma generate` resuelva el datasource en build
-# No conecta a ninguna BS; la DATABASE_URL real se inyecta en runtime.
+# No conecta a ninguna BD; la DATABASE_URL real se inyecta en runtime.
 ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 
 # Script de build
@@ -30,7 +30,7 @@ FROM node:24-slim AS runtime
 WORKDIR /app/apps/api
 ENV NODE_ENV=production
 
-# TSL engine-Supabase: openssl y ca-certificates
+# TLS engine-Supabase: openssl y ca-certificates
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
