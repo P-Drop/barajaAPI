@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # -------- Stage 1: build --------
-FROM node:24-slim AS build
+FROM node:26-slim AS build
 WORKDIR /app
 
 # TLS Prisma-Supabase: openssl y ca-certificates
@@ -26,7 +26,7 @@ ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 RUN npm run build -w api
 
 # -------- Stage 2: runtime --------
-FROM node:24-slim AS runtime
+FROM node:26-slim AS runtime
 WORKDIR /app/apps/api
 ENV NODE_ENV=production
 
