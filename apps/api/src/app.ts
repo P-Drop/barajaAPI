@@ -18,8 +18,12 @@ import { env } from './config/env.js';
 
 const app: Application = express();
 
+// Rate Limiting
+app.set('trust proxy', 1);
+
 // Seguridad
 app.use(helmet());
+
 // CORS
 app.use(
   cors({
