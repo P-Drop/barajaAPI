@@ -5,5 +5,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     clearMocks: true,
+    env: { NODE_ENV: 'test', RATE_LIMIT_MAX: '3' },
+    setupFiles: ['./tests/setup.ts'],
   },
 });
