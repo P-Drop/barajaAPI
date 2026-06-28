@@ -36,19 +36,19 @@
 - [x] **Documentación**: especificación de la API (Swagger/OpenAPI) para los consumidores.
 - [x] **Test & debug**: test de integración con BD real y edge cases.
 
-## Fase 2: Despliegue Profesional (Go-to-Market de la API) ▶️
+## Fase 2: Despliegue Profesional (Go-to-Market de la API) ✅
 
 - **Objetivo**: Sacar el producto del entorno local y hacerlo accesible y seguro en la nube.
 - **Hito**: API pública, segura y consumible a través de internet.
 
 #### Entregables:
 
-- [ ] Pipeline de **despliegue continuo (CD)** en GitHub Actions.
-- [ ] Base de datos de producción aprovisionada.
-- [ ] Servidor desplegado con dominio y certificado de seguridad (SSL/HTTPS).
-- [ ] Limitación de peticiones (Rate Limiting) para evitar abusos en producción.
-- [ ] PRs automáticos de dependencias (Dependabot o Renovate)
-- [ ] CHANGELOG y versionado semántico (releases)
+- [x] Pipeline de **despliegue continuo (CD)** en GitHub Actions.
+- [x] Base de datos de producción aprovisionada.
+- [x] Servidor desplegado con dominio y certificado de seguridad (SSL/HTTPS).
+- [x] Limitación de peticiones (Rate Limiting) para evitar abusos en producción.
+- [x] PRs automáticos de dependencias (Dependabot o Renovate)
+- [x] CHANGELOG y versionado semántico (releases)
 
 ## Fase 3: Interfaz Visual (Frontend MVP) ⏳
 

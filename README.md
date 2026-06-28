@@ -101,6 +101,21 @@ Operaciones:
 
 📖 Documentación interactiva (Swagger): http://localhost:3000/api/docs
 
+## Producción
+
+La API está desplegada en **https://api.pedrorincon.dev**.
+
+- **Infra:** VPS (clouding.io) con Docker; **Nginx** como reverse proxy y **Certbot** (HTTPS con auto-renovación).
+- **Base de datos:** Supabase (PostgreSQL gestionado).
+- **Despliegue continuo:** cada merge a `main` dispara `cd.yml` → test → build de imagen en GHCR → migraciones → deploy por SSH al VPS.
+- **Health:** `GET /api/health` (liveness) y `GET /api/health/ready` (readiness, verifica la BD).
+
+> Despliegue manual (si hiciera falta), en el VPS dentro de `~/baraja`:
+>
+> ```bash
+> docker compose pull && docker compose up -d
+> ```
+
 ## Estructura del proyecto
 
 ```bash
