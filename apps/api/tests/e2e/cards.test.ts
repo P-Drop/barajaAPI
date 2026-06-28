@@ -89,6 +89,16 @@ describe('Tests suite for Deck v1 API', () => {
     expect(response.body).toHaveLength(2);
   });
 
+  // GET /api/v1/deck/shuffle
+  it('barajar devuelve el mismo conjunto de cartas (status 200)', async () => {
+    const response = await request(app).get('/api/v1/deck/shuffle');
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveLength(fakeDeck.length);
+  });
+});
+
+describe('Manejo de errores', () => {
   // DomainError
   it('Error 400: Bad Request -> DomainError cuando se intentan robar demasiadas cartas', async () => {
     const response = await request(app).get('/api/v1/deck/draw?count=999');
@@ -97,14 +107,6 @@ describe('Tests suite for Deck v1 API', () => {
     expect(response.body.error).toBe(
       'No puedes robar más cartas de las que hay',
     );
-  });
-
-  // GET /api/v1/deck/shuffle
-  it('barajar devuelve el mismo conjunto de cartas (status 200)', async () => {
-    const response = await request(app).get('/api/v1/deck/shuffle');
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveLength(fakeDeck.length);
   });
 
   // Edge cases -> Zod Error
@@ -118,5 +120,17 @@ describe('Tests suite for Deck v1 API', () => {
     const res = await request(app).get(url);
     expect(res.status).toBe(400);
     expect(res.body.error).toBe('Parámetros inválidos'); // Zod error
+  });
+
+  // 500 Error
+  it('responde 500 ante un error no controlado del repositorio', async () => {
+    vi.mocked(cardRepository.findFullDeck).mockRejectedValue(
+      new Error('Fallo inesperado de la BD'),
+    );
+
+    const res = await request(app).get('/api/v1/deck');
+
+    expect(res.status).toBe(500);
+    expect(res.body.error).toBe('Error interno del servidor');
   });
 });

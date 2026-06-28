@@ -1,6 +1,7 @@
 # barajaAPI
 
 ![CI](https://github.com/P-Drop/barajaAPI/actions/workflows/ci.yml/badge.svg)
+![coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)
 
 API REST de la baraja española.
 

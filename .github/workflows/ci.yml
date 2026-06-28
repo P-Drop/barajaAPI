@@ -53,8 +53,8 @@ jobs:
       - name: Comprobar formato
         run: npm run format:check
 
-      - name: Tests
-        run: npm test -w api
+      - name: Tests (e2e + cobertura)
+        run: npm run test:coverage -w api
 
       - name: Tests de integración
         run: npm run test:integration -w api
