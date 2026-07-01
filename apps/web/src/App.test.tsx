@@ -1,11 +1,22 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
+vi.mock('./api/client', () => ({
+  getDeck: vi.fn().mockResolvedValue([
+    {
+      id: 1,
+      value: 1,
+      suit: 'OROS',
+      isJoker: false,
+      name: 'As de oros',
+      image: 'oros_1.png',
+    },
+  ]),
+}));
+
 describe('App', () => {
-  it('renderiza sin romperse', () => {
+  it('pinta las cartas que devuelve la API', async () => {
     render(<App />);
-    expect(
-      screen.getByRole('button', { name: /count is/i }),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('As de oros')).toBeInTheDocument();
   });
 });
