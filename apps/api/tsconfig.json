@@ -19,6 +19,6 @@
     /* Sin salida */
     "noEmit": true
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*", "tests/**/*", "prisma/**/*"],
   "exclude": ["node_modules", "dist"]
 }
