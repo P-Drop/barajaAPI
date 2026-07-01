@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Variables del front: URLs públicas que sí se versionan
+!.env.development
+!.env.production
