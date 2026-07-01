@@ -56,15 +56,15 @@ sudo find / -perm -4000 -type f 2>/dev/null  # binarios SUID (inventario base; v
 
 ## 2. Cómo interpretar las señales (normal vs sospechoso)
 
-| Señal                                          | ✅ Normal                                           | 🚩 Investiga                                                    |
+| Señal | ✅ Normal | 🚩 Investiga |
 | ---------------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------- | --------------- |
-| `lastb` lleno de intentos (mysql, admin, git…) | **Sí**, es ruido de bots constante en internet      | (no aplica: son fallidos)                                       |
-| `last` (logins exitosos)                       | Solo tú + `reboot`                                  | **Cualquier usuario/IP que no reconozcas**                      |
-| Usuarios UID 0                                 | solo `root`                                         | **cualquier otro**                                              |
-| Puertos a la escucha                           | 22, 80, 443, `127.0.0.1:3000`, resolve/dhcp locales | **puertos altos desconocidos, o 3000 en `0.0.0.0`**             |
-| Procesos top CPU                               | node, dockerd, nginx…                               | **procesos con nombres aleatorios, minado, CPU 100% sostenida** |
-| Cron                                           | qemu-guest-agent (clouding), certbot, apt…          | \*\*scripts en `/tmp`, descargas con `curl                      | sh`, base64\*\* |
-| `reboot` en `last` con kernel nuevo            | Actualización de seguridad aplicada                 | reinicios que tú no provocaste y sin motivo                     |
+| `lastb` lleno de intentos (mysql, admin, git…) | **Sí**, es ruido de bots constante en internet | (no aplica: son fallidos) |
+| `last` (logins exitosos) | Solo tú + `reboot` | **Cualquier usuario/IP que no reconozcas** |
+| Usuarios UID 0 | solo `root` | **cualquier otro** |
+| Puertos a la escucha | 22, 80, 443, `127.0.0.1:3000`, resolve/dhcp locales | **puertos altos desconocidos, o 3000 en `0.0.0.0`** |
+| Procesos top CPU | node, dockerd, nginx… | **procesos con nombres aleatorios, minado, CPU 100% sostenida** |
+| Cron | qemu-guest-agent (clouding), certbot, apt… | \*\*scripts en `/tmp`, descargas con `curl                      | sh`, base64\*\* |
+| `reboot` en `last` con kernel nuevo | Actualización de seguridad aplicada | reinicios que tú no provocaste y sin motivo |
 
 ---
 
