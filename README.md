@@ -38,16 +38,17 @@ npm install
 ## Variables de entorno
 
 `cp apps/api/.env.example apps/api/.env`
-| Variable | Descripción |
-| --------------------- | ---------------------------------- |
-| DATABASE_URL | Cadena de conexión a PostgreSQL |
-| PORT | Puerto del servidor (3000) |
-| CORS_ORIGIN | Origen permitido (\* en dev) |
-| NODE_ENV | development / production / test |
-| LOG_LEVEL | Nivel de pino (info por defecto) |
-| POSTGRES\_\* | (raíz) credenciales del contenedor |
-| RATE_LIMIT_MAX | Máx. de peticiones por IP y ventana (100 por defecto) |
-| RATE_LIMIT_WINDOW_MS | Ventana del rate limit en ms (900000 = 15 min) |
+
+| Variable             | Descripción                                           |
+| -------------------- | ----------------------------------------------------- |
+| DATABASE_URL         | Cadena de conexión a PostgreSQL                       |
+| PORT                 | Puerto del servidor (3000)                            |
+| CORS_ORIGIN          | Origen permitido (\* en dev)                          |
+| NODE_ENV             | development / production / test                       |
+| LOG_LEVEL            | Nivel de pino (info por defecto)                      |
+| POSTGRES\_\*         | (raíz) credenciales del contenedor                    |
+| RATE_LIMIT_MAX       | Máx. de peticiones por IP y ventana (100 por defecto) |
+| RATE_LIMIT_WINDOW_MS | Ventana del rate limit en ms (900000 = 15 min)        |
 
 ## Scripts
 
