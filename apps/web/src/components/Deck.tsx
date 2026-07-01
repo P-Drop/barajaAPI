@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { getDeck, type Card } from '../api/client';
+import { getDeck, type Card as CardData } from '../api/client';
+import { Card } from './Card';
 
 export function Deck() {
-  const [cards, setCards] = useState<Card[]>([]);
+  const [cards, setCards] = useState<CardData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -19,10 +20,10 @@ export function Deck() {
   if (error) return <p role="alert">Error: {error}</p>;
 
   return (
-    <ul>
+    <div className="deck">
       {cards.map((card) => (
-        <li key={card.id}>{card.name}</li>
+        <Card key={card.id} card={card} />
       ))}
-    </ul>
+    </div>
   );
 }

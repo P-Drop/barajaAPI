@@ -17,6 +17,8 @@ vi.mock('./api/client', () => ({
 describe('App', () => {
   it('pinta las cartas que devuelve la API', async () => {
     render(<App />);
-    expect(await screen.findByText('As de oros')).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'As de oros' }),
+    ).toBeInTheDocument();
   });
 });
