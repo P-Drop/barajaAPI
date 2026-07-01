@@ -12,6 +12,8 @@ vi.mock('./api/client', () => ({
       image: 'oros_1.png',
     },
   ]),
+  getShuffledDeck: vi.fn().mockResolvedValue([]),
+  ApiError: class ApiError extends Error {},
 }));
 
 describe('App', () => {
