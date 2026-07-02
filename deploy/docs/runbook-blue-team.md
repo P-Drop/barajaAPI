@@ -176,3 +176,18 @@ Señales: usuario UID 0 nuevo, proceso de minado, puerto raro, binario SUID nuev
 - [ ] (Opcional) puerto SSH alto vía `ssh.socket`
 - [ ] (Opcional) PAT de GHCR con caducidad/rotación
 - [ ] (Opcional) CrowdSec como complemento a fail2ban
+- [ ] (Opcional) **Clave SSH dedicada y restringida para el deploy del front** (mínimo privilegio):
+      hoy el job `deploy-web` usa `VPS_SSH_KEY` (la clave del usuario admin), que si se filtra
+      da acceso completo al VPS. La mejora: generar un par **solo para el CI del front**,
+      crear un secreto nuevo (p. ej. `VPS_SSH_KEY_WEB`) y atar su clave pública en
+      `~/.ssh/authorized_keys` a un único comando con `rrsync` (incluido con rsync):
+
+      ```
+      command="rrsync /var/www/baraja",restrict ssh-ed25519 AAAA... deploy-web-ci
+      ```
+
+      Con `command=` + `restrict`, esa clave **no puede abrir shell ni ejecutar nada**:
+      solo operaciones rsync dentro de `/var/www/baraja`. Daño máximo si se filtra =
+      sobrescribir los estáticos del front (y se corrige con un re-deploy).
+      Nota: la clave del deploy de la **API** no admite esta restricción (ejecuta
+      `docker compose`); valorar también separarla del usuario admin.
