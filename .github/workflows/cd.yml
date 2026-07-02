@@ -73,3 +73,31 @@ jobs:
             docker compose pull
             docker compose up -d
             docker image prune -f
+
+  # 5) Despliega el Front en el VPS por SSH
+  deploy-web:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build de producción del front
+        run: npm run build -w web
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Desplegar estáticos al VPS
+        run: rsync -avz --delete apps/web/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/baraja/
