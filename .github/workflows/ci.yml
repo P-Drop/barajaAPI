@@ -61,3 +61,9 @@ jobs:
 
       - name: Build
         run: npm run build -w api
+
+      - name: Test del front (con cobertura)
+        run: npm run test:coverage -w web
+
+      - name: Build del front
+        run: npm run build -w web
