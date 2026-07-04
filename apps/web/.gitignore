@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Excluir cobertura de tests
+coverage
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,3 +29,4 @@ dist-ssr
 # Variables del front: URLs públicas que sí se versionan
 !.env.development
 !.env.production
+
