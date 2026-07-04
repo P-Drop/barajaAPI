@@ -6,7 +6,10 @@ expand(loadEnv());
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
-  CORS_ORIGIN: z.string().default('*'),
+  CORS_ORIGIN: z
+    .string()
+    .default('*')
+    .transform((v) => (v === '*' ? v : v.split(',').map((s) => s.trim()))),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL es obligatoria'),
   NODE_ENV: z
     .enum(['development', 'production', 'test'])

@@ -25,11 +25,7 @@ app.set('trust proxy', 1);
 app.use(helmet());
 
 // CORS
-app.use(
-  cors({
-    origin: env.CORS_ORIGIN,
-  }),
-);
+app.use(cors({ origin: env.CORS_ORIGIN }));
 // Parseo body
 app.use(express.json());
 

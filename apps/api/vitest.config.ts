@@ -5,7 +5,11 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     clearMocks: true,
-    env: { NODE_ENV: 'test', RATE_LIMIT_MAX: '3' },
+    env: {
+      NODE_ENV: 'test',
+      RATE_LIMIT_MAX: '3',
+      CORS_ORIGIN: 'https://baraja.pedrorincon.dev',
+    },
     setupFiles: ['./tests/setup.ts'],
     coverage: {
       provider: 'v8',
