@@ -50,16 +50,16 @@
 - [x] PRs automáticos de dependencias (Dependabot o Renovate)
 - [x] CHANGELOG y versionado semántico (releases)
 
-## Fase 3: Interfaz Visual (Frontend MVP) ⏳
+## Fase 3: Interfaz Visual (Frontend MVP) ✅
 
 - **Objetivo**: Consumir nuestra propia API para validar su usabilidad y ofrecer una capa visual interactiva al usuario final.
 - **Hito**: Aplicación web desplegada donde un usuario pueda ver y manipular la baraja.
 
 #### Entregables:
 
-- [ ] Configuración de la app de React/Vue dentro del monorepo.
-- [ ] Catálogo visual de cartas (assets gráficos de la baraja).
-- [ ] Interfaz para visualizar la baraja, "Barajar" con un clic y ver el resultado consumiendo los endpoints de la Fase 1.
+- [x] Configuración de la app de React/Vue dentro del monorepo.
+- [x] Catálogo visual de cartas (assets gráficos de la baraja).
+- [x] Interfaz para visualizar la baraja, "Barajar" con un clic y ver el resultado consumiendo los endpoints de la Fase 1.
 
 ## Fase 4: Observabilidad, Analítica y Control ⏳
 
