@@ -1,3 +1,4 @@
+import { deckOperations } from '../config/metrics.js';
 import { DomainError } from '../errors/DomainError.js';
 
 import { cardRepository } from '../repositories/cardRepository.js';
@@ -11,17 +12,24 @@ const shuffle = <T>(array: T[]): T[] => {
   return result;
 };
 
+// Acceso compartido al mazo, sin métrica
+const fetchDeck = (short: boolean) =>
+  short ? cardRepository.findShortDeck() : cardRepository.findFullDeck();
+
 export const cardService = {
-  getDeck: (short: boolean) =>
-    short ? cardRepository.findShortDeck() : cardRepository.findFullDeck(),
+  getDeck: (short: boolean) => {
+    deckOperations.inc({ operation: 'get' });
+    return fetchDeck(short);
+  },
 
   getShuffledDeck: async (short: boolean) => {
-    const deck = await cardService.getDeck(short);
-    return shuffle(deck);
+    deckOperations.inc({ operation: 'shuffle' });
+    return shuffle(await fetchDeck(short));
   },
 
   drawCards: async (count: number, short: boolean) => {
-    const deck = await cardService.getShuffledDeck(short);
+    deckOperations.inc({ operation: 'draw' });
+    const deck = shuffle(await fetchDeck(short));
     if (count > deck.length) {
       throw new DomainError('No puedes robar más cartas de las que hay');
     }
