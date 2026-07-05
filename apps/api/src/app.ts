@@ -9,6 +9,9 @@ import { openApiDocument } from './docs/openapi.js';
 
 import { httpLogger } from './config/httpLogger.js';
 
+import { metricsMiddleware } from './middlewares/metricsMiddleware.js';
+import { register } from './config/metrics.js';
+
 import routes from './routes/index.js';
 
 import { notFound } from './middlewares/notFound.js';
@@ -32,12 +35,21 @@ app.use(express.json());
 // Logger
 app.use(httpLogger);
 
+// Métricas Prometheus
+app.use(metricsMiddleware);
+
 // Documentación OpenAPI
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 app.get('/api/docs.json', (_req, res) => res.json(openApiDocument));
 
 // Rutas
 app.use('/api', routes);
+
+// Endpoint métricas Prometheus
+app.get('/metrics', async (_req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.send(await register.metrics());
+});
 
 // Manejo de rutas no encontradas (404)
 app.use(notFound);
