@@ -25,5 +25,6 @@ export const errorHandler = (
   req.log.error({ err }, 'Error no controlado');
   res.status(500).json({
     error: 'Error interno del servidor',
+    requestId: req.id,
   });
 };

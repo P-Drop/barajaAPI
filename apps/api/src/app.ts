@@ -7,8 +7,7 @@ import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import { openApiDocument } from './docs/openapi.js';
 
-import { pinoHttp } from 'pino-http';
-import { logger } from './config/logger.js';
+import { httpLogger } from './config/httpLogger.js';
 
 import routes from './routes/index.js';
 
@@ -26,11 +25,12 @@ app.use(helmet());
 
 // CORS
 app.use(cors({ origin: env.CORS_ORIGIN }));
+
 // Parseo body
 app.use(express.json());
 
 // Logger
-app.use(pinoHttp({ logger }));
+app.use(httpLogger);
 
 // Documentación OpenAPI
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
