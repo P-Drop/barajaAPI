@@ -11,3 +11,43 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: baraja-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=15d'
+      - '--storage.tsdb.retention.size=512MB'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - '127.0.0.1:9090:9090'
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: baraja-grafana
+    env_file: .env.grafana
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - '127.0.0.1:3001:3000'
+    restart: unless-stopped
+    depends_on: [prometheus]
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+volumes:
+  prometheus-data:
+  grafana-data:
