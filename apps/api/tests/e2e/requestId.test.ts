@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../../src/app.js';
 
 describe('X-Request-Id', () => {
-  it('toda respuesta incluye un request-id gnerado (formato uuid)', async () => {
+  it('toda respuesta incluye un request-id generado (formato uuid)', async () => {
     const res = await request(app).get('/api/health');
     expect(res.headers['x-request-id']).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,

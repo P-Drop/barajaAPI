@@ -3,7 +3,7 @@ import request from 'supertest';
 import app from '../../src/app.js';
 
 // Reutiliza el Mock del repositorio del resto de test e2e
-describe('Rate limitng', () => {
+describe('Rate limiting', () => {
   it('responde 429 al superar el límite', async () => {
     const max = Number(process.env.RATE_LIMIT_MAX); // 3
     for (let i = 0; i < max; i++) {

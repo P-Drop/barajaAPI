@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 
 import { z, ZodError } from 'zod';
 import { DomainError } from '../errors/DomainError.js';
+import { Sentry } from '../config/sentry.js';
 
 export const errorHandler = (
   err: Error,
@@ -22,6 +23,10 @@ export const errorHandler = (
   }
 
   // Error genérico
+  Sentry.withScope((scope) => {
+    scope.setTag('request_id', String(req.id));
+    Sentry.captureException(err);
+  });
   req.log.error({ err }, 'Error no controlado');
   res.status(500).json({
     error: 'Error interno del servidor',

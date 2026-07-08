@@ -14,6 +14,7 @@
   "dependencies": {
     "@fontsource/cinzel": "^5.2.8",
     "@fontsource/inter": "^5.2.8",
+    "@sentry/react": "^10.64.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
