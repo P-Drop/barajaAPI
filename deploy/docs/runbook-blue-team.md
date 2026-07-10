@@ -73,6 +73,8 @@ Normal. Son bots. Confirma que **ninguno entró**: `last -aw | head`. Si solo es
    ```
 3. Asegura `backend = systemd` en `/etc/fail2ban/jail.local` y `sudo systemctl restart fail2ban`.
 
+> jails de archivo (nginx): el `backend = systemd` global no es válido para nginx-http-auth -> override con `backend = polling` + `logpath`.
+
 ### D) "Quiero cambiar el puerto SSH" (Ubuntu 24.04 usa socket activation)
 
 La directiva `Port` de `sshd_config` **se ignora**. Edita el socket:
@@ -118,6 +120,9 @@ Señales: usuario UID 0 nuevo, proceso de minado, puerto raro, binario SUID nuev
 - [x] `/metrics` bloqueado públicamente (404 en Nginx); scrape solo por red interna
 - [x] Grafana: registro deshabilitado (`GF_USERS_ALLOW_SIGN_UP=false`), password fuerte, sin exposición directa
 - [x] `.env.production`, `.env.grafana` y `~/.docker/config.json` con permisos 600
+- [x] Grafana tras doble puerta: `auth_basic` de Nginx (credencial independiente) + jail `nginx-http-auth` de fail2ban
+- [x] Versión/build de Grafana ocultos a anónimos (`GF_AUTH_ANONYMOUS_HIDE_VERSION=true`; verificado: bootData sin versionString)
+- [x] `server_tokens off` en nginx.conf (no versionado - aplicar a mano si se recrea el VPS)
 - [ ] (Opcional) puerto SSH alto vía `ssh.socket`
 - [ ] (Opcional) PAT de GHCR con caducidad/rotación
 - [ ] (Opcional) CrowdSec como complemento a fail2ban

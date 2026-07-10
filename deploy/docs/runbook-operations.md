@@ -86,6 +86,11 @@ Túnel SSH — acceso admin sin abrir puertos:
 ssh -L 9090:localhost:9090 <usuario>@<VPS>   # luego abrir http://localhost:9090 en local
 ```
 
+### Doble login (basic auth de Nginx -> login de Grafana)
+
+- Password de basic auth en `/etc/nginx/.htpasswd_grafana` (no versionado)
+- Actualización mensual del stack es **también tarea de seguridad** (bootData anuncia `hasUpdate` con actualizaciones pendientes).
+
 ### Comprobaciones rápidas (desde el VPS)
 
 ```bash
