@@ -28,6 +28,8 @@ Monorepo (npm workspaces) con dos aplicaciones: `apps/api` (Express + Prisma) y 
 - Prisma (ORM)
 - pino (logging)
 - OpenAPI / Swagger (docs)
+- prom-client (métricas Prometheus)
+- Sentry (error tracking)
 
 #### Frontend
 
@@ -37,6 +39,7 @@ Monorepo (npm workspaces) con dos aplicaciones: `apps/api` (Express + Prisma) y 
 - Tailwind CSS 4
 - Vitest + Testing Library
 - Cliente tipado generado del OpenAPI
+- Sentry (ErrorBoundary + source maps)
 
 ## Requisitos
 
@@ -160,15 +163,24 @@ flowchart TB
         NG["Nginx 80/443 + Certbot"]
         FE["Estáticos SPA<br>/var/www/baraja"]
         API["Docker: baraja-api<br>127.0.0.1:3000"]
+        PROM["Prometheus<br>127.0.0.1:9090"]
+        GRAF["Grafana<br>127.0.0.1:3001"]
         NG -->|baraja.pedrorincon.dev| FE
-        NG -->|api.pedrorincon.dev<br>proxy_pass| API
+        NG -->|api.pedrorincon.dev| API
+        NG -->|grafana.pedrorincon.dev<br>basic auth| GRAF
+        PROM -->|scrape /metrics 30 s| API
+        GRAF -->|datasource| PROM
     end
 
     API --> DB[("Supabase<br>PostgreSQL")]
+    API -.->|errores 500 + release| SENTRY["Sentry (SaaS)"]
+    FE -.->|crashes + source maps| SENTRY
+    GRAF -.->|alertas| DISCORD["Discord"]
+    UR["UptimeRobot"] -.->|/api/health/ready| NG
 
     subgraph CD ["GitHub Actions (CD, push a main)"]
-        W["build web"] -->|rsync/SSH| FE
-        IMG["imagen GHCR"] -->|docker compose pull| API
+        W["build web<br>(+ maps → Sentry)"] -->|rsync| FE
+        IMG["imagen GHCR<br>(release = SHA)"] -->|compose pull| API
     end
 ```
 
@@ -184,6 +196,25 @@ flowchart TB
 > ```bash
 > docker compose pull && docker compose up -d
 > ```
+
+## Observabilidad
+
+![Panel de control](.github/assets/screenshot_dashboard.webp)
+
+Cada petición y cada error del sistema son trazables de extremo a extremo:
+
+- **Request-id:** toda respuesta incluye `X-Request-Id` (se respeta el entrante o se genera). El mismo id correlaciona la respuesta al cliente, los logs (pino, JSON a stdout → `docker logs`) y el evento de Sentry.
+
+- **Métricas Prometheus** (`GET /metrics`, solo red interna): histograma de latencia por ruta y estado, counter de negocio (`deck_operations_total`) y métricas de Node (event loop, memoria). Scrape cada 30 s.
+
+- **Panel de control** (Grafana en `grafana.pedrorincon.dev`, dashboard provisionado como código en `deploy/grafana/provisioning/`): RPS, latencia, p50/p95, códigos de estado, uso por endpoint, barajas/día y salud del proceso.
+
+- **Alertas** (también provisionadas como código): API caída y tasa de 5xx sostenida → webhook de Discord; monitor externo (UptimeRobot) sobre `/api/health/ready` como vigilante independiente.
+
+- **Errores centralizados** (Sentry): la API reporta los 500 no controlados con el request-id y `release` = SHA del commit; el front reporta crashes con stack traces simbolicados (source maps subidos en el build del CD, nunca publicados).
+
+Operación: [runbook-operations](deploy/docs/runbook-operations.md) · Seguridad:
+[runbook-blue-team](deploy/docs/runbook-blue-team.md).
 
 ## Estructura del proyecto
 
@@ -221,8 +252,9 @@ apps/
           ├─── cards/           # 49 naipes WebP (CC BY-SA 3-0, ver ATTRIBUTION.md)
           └─── textures/        # texturas de la UI (madera del header)
 deploy/
-├─── docs/                      # runbook blue team + política de caché HTTP
+├─── docs/                      # runbook blue team + runbook operations + política de caché HTTP
 ├─── nginx/                     # server block del front (copia versionada)
+├─── grafana/provisioning       # dashboard y alertings de Grafana (copia versionada)
 └─── docker-compose.prod.yml    # compose de producción del VPS
 ```
 
