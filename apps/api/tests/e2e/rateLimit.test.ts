@@ -5,12 +5,12 @@ import request from 'supertest';
 vi.mock('../../src/repositories/cardRepository.js', () => ({
   cardRepository: {
     findFullDeck: vi
-    .fn()
-    .mockResolvedValue([
-      { id: 1, value: 1, suit: 'OROS', isJoker: false, name: 'As de oros' }
-    ]),
-    findShortDeck: vi.fn()
-  }
+      .fn()
+      .mockResolvedValue([
+        { id: 1, value: 1, suit: 'OROS', isJoker: false, name: 'As de oros' },
+      ]),
+    findShortDeck: vi.fn(),
+  },
 }));
 
 import app from '../../src/app.js';
