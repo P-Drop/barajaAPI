@@ -129,7 +129,7 @@ docker exec baraja-grafana grafana cli admin reset-admin-password '<nuevo-passwo
 
 - Los paneles referencian el datasource por `uid: prometheus` (fijado en `datasources/prometheus.yml`): si ese uid cambia, todos los paneles caen con "datasource not found".
 
-- **Alertas y contact points NO están provisionados**: viven en el volumen `grafana-data`. Si se resetea el volumen, recrearlos a mano (reglas: API caída `up == 0`, error rate 5xx; canal: webhook de Discord — URL en el contact point, tratar como secreto).
+- **Alertas y contact points**: provisionados como código en `provisioning/alerting/` (solo lectura en la UI); el secreto del webhook se interpola vía `$DISCORD_WEBHOOK_URL` desde `.env.grafana`.viven en el volumen `grafana-data`; la fuente de verdad es el repo.
 
 ## 3. Gestión de logs
 

@@ -28,7 +28,9 @@ RUN npm run build -w api
 # -------- Stage 2: runtime --------
 FROM node:24-slim AS runtime
 WORKDIR /app/apps/api
+ARG GIT_SHA=dev
 ENV NODE_ENV=production
+ENV SENTRY_RELEASE=$GIT_SHA
 
 # TLS engine-Supabase: openssl y ca-certificates
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
