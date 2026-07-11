@@ -154,6 +154,8 @@ docker exec baraja-grafana grafana cli admin reset-admin-password '<nuevo-passwo
 
 - **Cambios de env de la API** (p. ej. `CORS_ORIGIN`): editar `.env.production` + `docker compose up -d --force-recreate api`.
 
+- **Auditoría post-build** (tras cambiar config de build del front): verificar que no se filtran secretos al bundle — `grep -E 'sntrys|postgresql|ghp_' apps/web/dist/assets/*.js` (vacío = OK).
+
 ## 5. Troubleshooting operativo
 
 ### A) "La API no responde / 502 Bad Gateway"
