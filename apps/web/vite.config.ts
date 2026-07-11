@@ -1,9 +1,29 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    sentryVitePlugin({
+      org: 'rukune',
+      project: 'baraja-web',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      disable: !process.env.SENTRY_AUTH_TOKEN,
+      telemetry: false,
+      release: { name: process.env.GITHUB_SHA },
+      sourcemaps: {
+        filesToDeleteAfterUpload: ['./dist/**/*.map'],
+      },
+    }),
+  ],
+  build: {
+    // El warning SOURCEMAP_BROKEN de tailwind es solo para la cadena del CSS
+    // js.map para Sentry OK
+    sourcemap: 'hidden',
+  },
   test: {
     globals: true,
     environment: 'jsdom',
