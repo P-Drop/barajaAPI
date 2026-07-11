@@ -61,16 +61,16 @@
 - [x] Catálogo visual de cartas (assets gráficos de la baraja).
 - [x] Interfaz para visualizar la baraja, "Barajar" con un clic y ver el resultado consumiendo los endpoints de la Fase 1.
 
-## Fase 4: Observabilidad, Analítica y Control ⏳
+## Fase 4: Observabilidad, Analítica y Control ✅
 
 - **Objetivo**: Soportar tráfico real y lógicas complejas entendiendo qué pasa dentro del producto.
 - **Hito**: Panel de control del estado del sistema.
 
 #### Entregables:
 
-- [ ] Trazabilidad de peticiones (saber qué endpoint se usa más), ampliando el logger de la Fase 1.
-- [ ] Registro de errores centralizado para detectar fallos en vivo.
-- [ ] Métricas de uso (¿cuántas barajas se generan al día?).
+- [x] Trazabilidad de peticiones (saber qué endpoint se usa más), ampliando el logger de la Fase 1.
+- [x] Registro de errores centralizado para detectar fallos en vivo.
+- [x] Métricas de uso (¿cuántas barajas se generan al día?).
 
 ## Fase 5: Motores de Juego (Expansión del Ecosistema) ⏳
 
