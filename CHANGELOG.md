@@ -5,6 +5,23 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/), y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es):
 **MAYOR** (cambios incompatibles de la API) · **MINOR** (funcionalidad retrocompatible) · **PATCH** (correcciones).
 
+## [1.2.0](https://github.com/P-Drop/barajaAPI/compare/v1.1.0...v1.2.0) (2026-07-11)
+
+
+### Features
+
+* **api:** méticas prometheus en la api ([#90](https://github.com/P-Drop/barajaAPI/issues/90)) ([f2a8cb3](https://github.com/P-Drop/barajaAPI/commit/f2a8cb3f8846a09d9d7f0b18ffdae9b38be51627))
+* **api:** trazabilidad de peticiones con request-id ([#89](https://github.com/P-Drop/barajaAPI/issues/89)) ([72fea61](https://github.com/P-Drop/barajaAPI/commit/72fea617ec858603ef1ee12c4e9db94f4421eecf))
+* **deploy:** panel de control de Grafana y alertas ([#97](https://github.com/P-Drop/barajaAPI/issues/97)) ([115e244](https://github.com/P-Drop/barajaAPI/commit/115e2441ace0c3af3c1af940283e891afc4c8133))
+* **deploy:** stack de observabilidad Prometheus + Grafana en el VPS ([#91](https://github.com/P-Drop/barajaAPI/issues/91)) ([6d4dfbd](https://github.com/P-Drop/barajaAPI/commit/6d4dfbd83c69957987e761e5144acdd19e06682b))
+* registro de errores centralizado con Sentry (API + front) ([#92](https://github.com/P-Drop/barajaAPI/issues/92)) ([cf6f2c0](https://github.com/P-Drop/barajaAPI/commit/cf6f2c0da299718b79d11914d2ecb3d63e613020))
+* Sentry con release tracking y source maps; alerting como código ([#98](https://github.com/P-Drop/barajaAPI/issues/98)) ([7e31fec](https://github.com/P-Drop/barajaAPI/commit/7e31fec1cbabab573b908b9903154ac02ff8d198))
+
+
+### Bug Fixes
+
+* configurar enlace a imagen en README ([#101](https://github.com/P-Drop/barajaAPI/issues/101)) ([56b80fc](https://github.com/P-Drop/barajaAPI/commit/56b80fc7c2d6a2d970f30112668acea4655659fc))
+
 ## [1.1.0](https://github.com/P-Drop/barajaAPI/compare/barajaapi-v1.0.0...barajaapi-v1.1.0) (2026-07-05)
 
 
