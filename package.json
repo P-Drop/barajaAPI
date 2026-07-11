@@ -41,6 +41,7 @@
     "@prisma/engines@6.19.3": true,
     "@prisma/client@6.19.3": true,
     "esbuild@0.28.1": true,
-    "@scarf/scarf@1.4.0": true
+    "@scarf/scarf@1.4.0": true,
+    "@sentry/cli@2.58.6": true
   }
 }
