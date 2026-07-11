@@ -199,7 +199,7 @@ flowchart TB
 
 ## Observabilidad
 
-![Panel de control](.github/assets/screenshot_dashboard.webp)
+![Panel de control](.github/assets/grafana_dashboard.webp)
 
 Cada petición y cada error del sistema son trazables de extremo a extremo:
 
