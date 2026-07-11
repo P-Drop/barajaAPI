@@ -10,18 +10,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ### Features
 
-* Añadir cobertura de tests con Vitests (v8) ([#54](https://github.com/P-Drop/barajaAPI/issues/54)) ([01dbe44](https://github.com/P-Drop/barajaAPI/commit/01dbe4491e2c4edb9a8020d4ad73fb56b9188f7c))
-* API REST de la baraja /api/v1 con validación y tests ([#26](https://github.com/P-Drop/barajaAPI/issues/26)) ([477d7a9](https://github.com/P-Drop/barajaAPI/commit/477d7a9484f3ce924a2ccbbaa82c05ae9353a342))
-* configurar infraestructura de datos con PostgreSQL y Prisma ([#22](https://github.com/P-Drop/barajaAPI/issues/22)) ([20e59f6](https://github.com/P-Drop/barajaAPI/commit/20e59f68fdb138b1895cb30b7d4bcd1fb3e4860f))
-* dockerizar la API para producción ([#39](https://github.com/P-Drop/barajaAPI/issues/39)) ([712549e](https://github.com/P-Drop/barajaAPI/commit/712549ed6c4e710da322388da470b1d251223cbb))
-* dockerizar la API para producción (build autocontenido) ([712549e](https://github.com/P-Drop/barajaAPI/commit/712549ed6c4e710da322388da470b1d251223cbb))
-* documentar la API con OpenAPI y Swagger UI ([#28](https://github.com/P-Drop/barajaAPI/issues/28)) ([c33c1e1](https://github.com/P-Drop/barajaAPI/commit/c33c1e124e8de7165d8e3837375bfaee4966f753))
-* health-check y configuración inicial con buenas prácticas ([#5](https://github.com/P-Drop/barajaAPI/issues/5)) ([6852a24](https://github.com/P-Drop/barajaAPI/commit/6852a2434de69ffebdf221d5bb873cd89ef60374))
-* implementar cardRepository (baraja completa y corta) ([#24](https://github.com/P-Drop/barajaAPI/issues/24)) ([d6f6055](https://github.com/P-Drop/barajaAPI/commit/d6f6055ca3b6e638a4093335c3d14fc822d5e8d6))
-* logging estructurado con pino ([#29](https://github.com/P-Drop/barajaAPI/issues/29)) ([9f25915](https://github.com/P-Drop/barajaAPI/commit/9f25915c76212141104844d7a5655f3aba85b70d))
-* proteger API con Rate Limiting ([#53](https://github.com/P-Drop/barajaAPI/issues/53)) ([c9b1397](https://github.com/P-Drop/barajaAPI/commit/c9b1397bca12c36c86af3d6e51c6429bd1afcbb5))
 * test del frontend en CI y CORS estricto en la API ([#77](https://github.com/P-Drop/barajaAPI/issues/77)) ([8d59273](https://github.com/P-Drop/barajaAPI/commit/8d59273269d2802226c282429c6e478bdf1dc45e))
-* validar variables de entorno con Zod ([#12](https://github.com/P-Drop/barajaAPI/issues/12)) ([88ef870](https://github.com/P-Drop/barajaAPI/commit/88ef87088f89539617ecd95aa01bd0bdbd3c0c3d))
 * **web:** assets gráficos de la baraja y render con &lt;Card&gt; ([#68](https://github.com/P-Drop/barajaAPI/issues/68)) ([994339b](https://github.com/P-Drop/barajaAPI/commit/994339be8ce15725c73677ed5bfc60acf3d8cc52))
 * **web:** cliente tipado de la API y render de la baraja ([#67](https://github.com/P-Drop/barajaAPI/issues/67)) ([5b81589](https://github.com/P-Drop/barajaAPI/commit/5b8158972557c8d9b4dd8b017783f3c9cc84485f))
 * **web:** UI para visualizar y barajar la baraja española ([#73](https://github.com/P-Drop/barajaAPI/issues/73)) ([4b55a84](https://github.com/P-Drop/barajaAPI/commit/4b55a8481965edc04a47ec9827743e8c6a9525d9))
