@@ -1,8 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
+
+// e2e sin BD: repositorio mockeado
+vi.mock('../../src/repositories/cardRepository.js', () => ({
+  cardRepository: {
+    findFullDeck: vi
+      .fn()
+      .mockResolvedValue([
+        { id: 1, value: 1, suit: 'OROS', isJoker: false, name: 'As de oros' },
+      ]),
+    findShortDeck: vi.fn(),
+  },
+}));
+
 import app from '../../src/app.js';
 
-// Reutiliza el Mock del repositorio del resto de test e2e
 describe('Rate limiting', () => {
   it('responde 429 al superar el límite', async () => {
     const max = Number(process.env.RATE_LIMIT_MAX); // 3

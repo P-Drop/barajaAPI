@@ -120,6 +120,17 @@ docker exec baraja-grafana grafana cli admin reset-admin-password '<nuevo-passwo
 > inicializa `grafana-data`). Después, la credencial vive en el volumen y el env
 > se ignora: para cambiarla, usar el comando de arriba.
 
+### Dashboards provisionados (como código)
+
+- Fuente de verdad: `deploy/grafana/provisioning/dashboards/*.json` (repo) → copiado a `~/baraja/grafana/provisioning/dashboards/` en el VPS.
+
+- Los dashboards provisionados son **de solo lectura en la UI**
+  (`allowUiUpdates: false`). Para modificarlos: "Save as" a un borrador editable → iterar en la UI → exportar el JSON → reemplazar el archivo → `docker compose restart grafana` → borrar el borrador.
+
+- Los paneles referencian el datasource por `uid: prometheus` (fijado en `datasources/prometheus.yml`): si ese uid cambia, todos los paneles caen con "datasource not found".
+
+- **Alertas y contact points NO están provisionados**: viven en el volumen `grafana-data`. Si se resetea el volumen, recrearlos a mano (reglas: API caída `up == 0`, error rate 5xx; canal: webhook de Discord — URL en el contact point, tratar como secreto).
+
 ## 3. Gestión de logs
 
 - La API loggea **JSON a stdout** (pino); Docker lo captura (`json-file`, rotado 3×10 MB por contenedor).
