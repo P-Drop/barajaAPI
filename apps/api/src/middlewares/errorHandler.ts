@@ -17,12 +17,12 @@ export const errorHandler = (
       .json({ error: 'Parámetros inválidos', details: z.flattenError(err) });
   }
 
-  // Error 400: Bad Request por count > tamaño baraja
+  // Errores de dominio (Domain error y subclases): responden con el statusCode de la clase
   if (err instanceof DomainError) {
     return res.status(err.statusCode).json({ error: err.message });
   }
 
-  // Error genérico
+  // Error 500 genérico
   Sentry.withScope((scope) => {
     scope.setTag('request_id', String(req.id));
     Sentry.captureException(err);

@@ -22,11 +22,24 @@ enum Suit {
 }
 
 model Card {
-  id        Int       @id @default(autoincrement())
-  value     Int?
-  suit      Suit?
-  isJoker   Boolean   @default(false)
-  name      String
-    
+  id      Int     @id @default(autoincrement())
+  value   Int?
+  suit    Suit?
+  isJoker Boolean @default(false)
+  name    String
+
   @@unique([suit, value])
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  nickname           String
+  nicknameNormalized String   @unique
+  passwordHash       String
+  avatar             String
+  stars              Int      @default(0)
+  totalPlaySeconds   Int      @default(0)
+  achievements       String[] @default([])
+  createdAt          DateTime @default(now())
+  isActive           Boolean  @default(true)
 }
