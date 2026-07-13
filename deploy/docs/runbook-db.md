@@ -16,7 +16,7 @@
 | ------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
 | API en producción (contenedor `baraja-api`) | Runtime                                    | `DATABASE_URL` en `~/baraja/.env.production` (VPS) |
 | CD (GitHub Actions)                         | `prisma migrate deploy` en cada despliegue | Secret `DATABASE_URL` del repositorio              |
-| Desarrollo y tests                          | **Nunca contra Supabase**                  | Postgres local (`docker compose up-d`)            |
+| Desarrollo y tests                          | **Nunca contra Supabase**                  | Postgres local (`docker compose up-d`)             |
 
 ## 1. Seguridad de acceso
 
@@ -42,7 +42,6 @@
 ## 2. Backups y restore
 
 - **Automáticos del plan**: plan free no incluye backups automáticos ni Point in Time Recovery.
-
 
 - **Manual antes de migraciones delicadas** (destructivas o de gran volumen):
 
