@@ -16,13 +16,12 @@
 | ------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
 | API en producción (contenedor `baraja-api`) | Runtime                                    | `DATABASE_URL` en `~/baraja/.env.production` (VPS) |
 | CD (GitHub Actions)                         | `prisma migrate deploy` en cada despliegue | Secret `DATABASE_URL` del repositorio              |
-| Desarrollo y tests                          | **Nunca contra Supabase**                  | Postgres local (`docker compose up -d`)            |
+| Desarrollo y tests                          | **Nunca contra Supabase**                  | Postgres local (`docker compose up-d`)            |
 
 ## 1. Seguridad de acceso
 
 - **Data API cerrada**: sin esquemas expuestos. Verificación: dashboard → Settings → API
-  (la lista de _exposed schemas_ debe seguir vacía, o la Data API deshabilitada si el
-  plan lo permite).
+  (la lista de _exposed schemas_ debe seguir vacía, o la Data API deshabilitada).
 - **RLS (Row Level Security)**: Supabase lo activa automáticamente en cada tabla nueva
   (`rls_auto_enable`). No afecta a la API — el rol propietario de las tablas bypassa
   RLS — y bloquea cualquier acceso vía Data API sin políticas. Verificación periódica en
@@ -42,8 +41,9 @@
 
 ## 2. Backups y restore
 
-- **Automáticos del plan**: verificar en el dashboard qué incluye el plan actual
-  (alcance y retención) y anotarlo aquí en la próxima revisión. No asumirlo.
+- **Automáticos del plan**: plan free no incluye backups automáticos ni Point in Time Recovery.
+
+
 - **Manual antes de migraciones delicadas** (destructivas o de gran volumen):
 
   ```bash
