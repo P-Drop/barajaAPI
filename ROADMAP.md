@@ -72,14 +72,45 @@
 - [x] Registro de errores centralizado para detectar fallos en vivo.
 - [x] Métricas de uso (¿cuántas barajas se generan al día?).
 
-## Fase 5: Motores de Juego (Expansión del Ecosistema) ⏳
+## Fase 5: Motor de Juego - Solitario Orda ⏳
 
-- **Objetivo**: Evolucionar de un "repartidor de cartas" a una plataforma de juegos clásicos.
-- **Hito**: Primer juego clásico completamente jugable a través de la API y el frontend.
+- **Objetivo**: Evolucionar de un "repartidor de cartas" a una plataforma de juegos con identidad de jugador.
+- **Hito**: [Solitario Orda](docs/ReglasSolitarioOrda.md) (juego original) completamente jugable a través de la API y el frontend.
 
 #### Entregables:
 
-- [ ] Gestor de sesiones/partidas (crear sala, unir jugadores).
-- [ ] Máquina de estados para reglas de juego (turnos, puntuación).
-- [ ] Comunicación en tiempo real (WebSockets) para multijugador.
-- [ ] Lanzamiento del "Juego 1" (Brisca, Tute, Continental... por definir).
+- [ ] Diseño y ADRs del motor: estado de partida, autenticación y política de abandono.
+- [ ] Identidad de jugador sin datos personales: registro y login (nickname anónimo, contraseña, avatar).
+- [ ] Motor de reglas server-authoritative del Solitario Orda (dominio puro, testeado contra el 100 % de las reglas).
+- [ ] Gestor de partidas persistente (crear, mover, abandonar) con bloqueo optimista y TTL de inactividad.
+- [ ] Perfil de jugador y ranking: estrellas con desempate por tiempo; logro _Escalera mecánica_.
+- [ ] Frontend: tablero completamente jugable, comodines y movimiento en bloque incluidos.
+- [ ] Observabilidad del juego: métricas de partidas y jugadores en el panel de Grafana.
+
+## Fase 6: Seguridad Ofensiva (Pentest de la Plataforma) ⏳
+
+- **Objetivo**: Auditar la plataforma propia con mentalidad de atacante, ahora que existe superficie real (autenticación, estado de partidas, ranking), y remediar lo encontrado.
+- **Hito**: Informe de pentest con hallazgos priorizados y remediaciones desplegadas en producción.
+
+#### Entregables:
+
+- [ ] Modelo de amenazas: activos, actores y superficies de ataque (API, auth, partidas, ranking, VPS).
+- [ ] Auditoría de autenticación y autorización: fuerza bruta, JWT (manipulación, expiración, fortaleza del secret), acceso a partidas ajenas (IDOR).
+- [ ] Revisión contra el OWASP API Security Top 10 (inyección, mass assignment, exposición de datos, rate limiting...).
+- [ ] Anti-cheat: intento de trampas de juego - movimientos ilegales fabricados, carreras contra el bloqueo optimista, manipulación de tiempos y puntuación.
+- [ ] Auditoría de dependencias y de la imagen Docker (npm audit, escáner de imagen).
+- [ ] Informe final con severidades, issues de remediación y verificación del checklist de hardening de los runbooks.
+
+## Fase 7: Plataforma Multijugador ⏳
+
+- **Objetivo**: Extender el motor a partidas de N jugadores en tiempo real.
+- **Hito**: Primer juego multijugador clásico (Brisca, Tute, Continental... por definir) jugable en salas.
+
+#### Entregables:
+
+- [ ] Gestor de salas: crear sala, unir jugadores, presencia.
+- [ ] Comunicación en tiempo real (WebSockets): upgrade en Nginx, autenticación del handshake, rate limiting y trazabilidad de conexiones.
+- [ ] Motor de turnos multijugador (extensión del motor de la Fase 5) con vistas por jugador (información oculta).
+- [ ] Reconexión y abandono en tiempo real (presencia por WebSocket en lugar de TTL - requerirá su ADR).
+- [ ] Lanzamiento del primer juego multijugador con su frontend.
+- [ ] Observabilidad del tiempo real: conexiones activas, salas y latencia.
