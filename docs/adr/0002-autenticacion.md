@@ -48,3 +48,5 @@ Se consideró un esquema propio: color elegido en el formulario (valor hexadecim
 - Nuevas variables de entorno validadas en `config/env.ts`: `JWT_SECRET`, `JWT_EXPIRES_IN`.
 
 - `/auth/*` requiere un rate limiting más estricto que el general (fuerza bruta); se implementa en F5-3.
+
+- El 409 de registro confirma nicknames existentes: aceptado, los nicknames son públicos en el ranking por diseño.
