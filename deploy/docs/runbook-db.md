@@ -16,7 +16,7 @@
 | ------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
 | API en producción (contenedor `baraja-api`) | Runtime                                    | `DATABASE_URL` en `~/baraja/.env.production` (VPS) |
 | CD (GitHub Actions)                         | `prisma migrate deploy` en cada despliegue | Secret `DATABASE_URL` del repositorio              |
-| Desarrollo y tests                          | **Nunca contra Supabase**                  | Postgres local (`docker compose up-d`)             |
+| Desarrollo y tests                          | **Nunca contra Supabase**                  | Postgres local (`docker compose up -d`)            |
 
 ## 1. Seguridad de acceso
 
@@ -77,7 +77,7 @@ Revisión mensual (junto a la rutina del VPS):
 - [ ] Tamaño de la BD y distancia al límite del plan (dashboard → Usage).
 - [ ] Conexiones activas: en modo _Session_ cada conexión cuenta; vigilar fugas.
 - [ ] Logs de Postgres: buscar patrones nuevos no listados en la sección 5.
-- [ ] Backups automáticos: comprobar que existen y son recientes.
+- [ ] Backup manual reciente.
 
 Particularidades del free tier:
 

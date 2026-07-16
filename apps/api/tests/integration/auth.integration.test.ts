@@ -14,15 +14,15 @@ const testUser = {
 
 const normalizedNickname = testUser.nickname.toLowerCase();
 
-describe('POST /api/v1/auth/register (BD real)', () => {
-  afterEach(async () => {
-    await prisma.user.deleteMany({
-      where: { nicknameNormalized: normalizedNickname },
-    });
+afterEach(async () => {
+  await prisma.user.deleteMany({
+    where: { nicknameNormalized: normalizedNickname },
   });
+});
 
-  afterAll(async () => await prisma.$disconnect());
+afterAll(async () => await prisma.$disconnect());
 
+describe('POST /api/v1/auth/register (BD real)', () => {
   it('alta correcta -> 201 y fila en BD con hash argon2id', async () => {
     const res = await request(app).post('/api/v1/auth/register').send(testUser);
 
@@ -49,5 +49,35 @@ describe('POST /api/v1/auth/register (BD real)', () => {
 
     expect(duplicateRegister.status).toBe(409);
     expect(duplicateRegister.body.error).toBe('El nickname ya está en uso');
+  });
+});
+
+describe('Login y /me (BD real)', () => {
+  it('cadena completa: register -> login -> me', async () => {
+    await request(app).post('/api/v1/auth/register').send(testUser);
+
+    const login = await request(app).post('/api/v1/auth/login').send({
+      nickname: testUser.nickname,
+      password: testUser.password,
+    });
+
+    expect(login.status).toBe(200);
+
+    const me = await request(app)
+      .get('/api/v1/auth/me')
+      .set('Authorization', `Bearer ${login.body.token}`);
+
+    expect(me.status).toBe(200);
+    expect(me.body.nickname).toBe(testUser.nickname);
+  });
+
+  it('contraseña incorrecta -> 401', async () => {
+    await request(app).post('/api/v1/auth/register').send(testUser);
+    const res = await request(app).post('/api/v1/auth/login').send({
+      nickname: testUser.nickname,
+      password: 'otraDistinta1234',
+    });
+
+    expect(res.status).toBe(401);
   });
 });

@@ -29,11 +29,11 @@ app.use(helmet());
 // CORS
 app.use(cors({ origin: env.CORS_ORIGIN }));
 
-// Parseo body
-app.use(express.json());
-
 // Logger
 app.use(httpLogger);
+
+// Parseo body
+app.use(express.json());
 
 // Métricas Prometheus
 app.use(metricsMiddleware);
