@@ -17,6 +17,11 @@ export const errorHandler = (
       .json({ error: 'Parámetros inválidos', details: z.flattenError(err) });
   }
 
+  // Error 400: body JSON malformado (express.json antes de llegar a Zod)
+  if (err instanceof SyntaxError && 'status' in err && err.status === 400) {
+    return res.status(400).json({ error: 'JSON del body inválido' });
+  }
+
   // Errores de dominio (Domain error y subclases): responden con el statusCode de la clase
   if (err instanceof DomainError) {
     return res.status(err.statusCode).json({ error: err.message });
@@ -27,7 +32,7 @@ export const errorHandler = (
     scope.setTag('request_id', String(req.id));
     Sentry.captureException(err);
   });
-  req.log.error({ err }, 'Error no controlado');
+  req.log?.error({ err }, 'Error no controlado');
   res.status(500).json({
     error: 'Error interno del servidor',
     requestId: req.id,

@@ -5,6 +5,7 @@ import cardRoutes from './cardRoutes.js';
 import authRoutes from './authRoutes.js';
 
 import { apiLimiter } from '../middlewares/rateLimiter.js';
+import { authLimiter } from '../middlewares/authLimiter.js';
 
 const router = Router();
 
@@ -15,6 +16,6 @@ router.use('/health', healthRoutes);
 router.use('/v1/deck', apiLimiter, cardRoutes);
 
 // Gestión de usuarios
-router.use('/v1/auth', apiLimiter, authRoutes);
+router.use('/v1/auth', authLimiter, authRoutes);
 
 export default router;

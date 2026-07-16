@@ -4,6 +4,7 @@ import { cardResponseSchema } from '../schemas/cardResponseSchema.js';
 import { deckQuerySchema } from '../schemas/deckQuerySchema.js';
 import { registerSchema } from '../schemas/registerSchema.js';
 import { userResponseSchema } from '../schemas/userResponseSchema.js';
+import { loginSchema } from '../schemas/loginSchema.js';
 
 export const registry = new OpenAPIRegistry();
 
@@ -56,7 +57,7 @@ registry.registerPath({
   },
 });
 
-// Usuarios
+// Registro de Usuarios
 registry.registerPath({
   method: 'post',
   path: '/api/v1/auth/register',
@@ -76,5 +77,59 @@ registry.registerPath({
     },
     400: errorResponse('Parámetros inválidos'),
     409: errorResponse('El nickname ya está en uso'),
+  },
+});
+
+// Token
+registry.registerComponent('securitySchemes', 'bearerAuth', {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'JWT',
+});
+
+// Login
+registry.registerPath({
+  method: 'post',
+  path: '/api/v1/auth/login',
+  summary: 'Iniciar sesión',
+  tags: ['Auth'],
+  request: {
+    body: {
+      content: {
+        'application/json': { schema: loginSchema },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Login correcto',
+      content: {
+        'application/json': {
+          schema: z.object({
+            token: z.string(),
+            user: userSchema,
+          }),
+        },
+      },
+    },
+    400: errorResponse('Parametrós inválidos'),
+    401: errorResponse('Credenciales inválidas'),
+    429: errorResponse('Demasiadas peticiones'),
+  },
+});
+
+// Me
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/auth/me',
+  summary: 'Usuario autenticado actual',
+  tags: ['Auth'],
+  security: [{ bearerAuth: [] }],
+  responses: {
+    200: {
+      description: 'Usuario del token',
+      content: { 'application/json': { schema: userSchema } },
+    },
+    401: errorResponse('Credenciales inválidas'),
   },
 });

@@ -16,4 +16,12 @@ export const userRepository = {
       throw e;
     }
   },
+
+  findByNickname: (nicknameNormalized: string) => {
+    return prisma.user.findUnique({ where: { nicknameNormalized } });
+  },
+
+  findById: (id: string) => {
+    return prisma.user.findUnique({ where: { id } });
+  },
 };
