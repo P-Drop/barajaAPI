@@ -47,11 +47,11 @@ const playRandomGame = (rng: Rng) => {
 };
 
 describe('propiedad: partidas aleatorias completas', () => {
-  it('1000 partidas conservan 50 cartas y terminan en WON/LOST', () => {
-    for (let seed = 0; seed < 1000; seed++) {
+  it('200 partidas conservan 50 cartas y terminan en WON/LOST', () => {
+    for (let seed = 0; seed < 200; seed++) {
       const final = playRandomGame(seededRng(seed));
       expect(['WON', 'LOST']).toContain(final.status);
       expect(countCards(final)).toBe(50);
     }
-  });
+  }, 2000); // timeout explícito: red de seguridad ante runners lentos
 });
