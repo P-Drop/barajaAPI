@@ -40,19 +40,18 @@ describe('legalMoves', () => {
   });
 
   it('mano vacía y mazo agotado (endGame) -> no incluye DRAW', () => {
-  const moves = legalMoves(
-    baseState({
-      stock: [],
-      cross: [['OROS-5'], ['BASTOS-6'], [], [], []],
-    }),
-  );
-  expect(moves).not.toContainEqual({ type: 'DRAW' });
-  // pero sí las colocaciones legales (OROS-5 sobre BASTOS-6)
-  expect(moves).toContainEqual({
-    type: 'PLACE',
-    from: { zone: 'cross', index: 0 },
-    to: { zone: 'cross', index: 1 },
+    const moves = legalMoves(
+      baseState({
+        stock: [],
+        cross: [['OROS-5'], ['BASTOS-6'], [], [], []],
+      }),
+    );
+    expect(moves).not.toContainEqual({ type: 'DRAW' });
+    // pero sí las colocaciones legales (OROS-5 sobre BASTOS-6)
+    expect(moves).toContainEqual({
+      type: 'PLACE',
+      from: { zone: 'cross', index: 0 },
+      to: { zone: 'cross', index: 1 },
+    });
   });
-});
-
 });
