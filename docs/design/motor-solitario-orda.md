@@ -4,11 +4,13 @@
 
 ## Ubicación y principios
 
-El motor es un módulo **puro** en `apps/api/src/games/orda/`: sin HTTP, sin Prisma y sin reloj propio (el tiempo entra como parámetro). Los services lo importan - es la capa de dominio de Clean Architecture, por debajo de services. Su contrato central es un reducer:
+El motor es un módulo **puro** en `apps/api/src/games/orda/`: sin HTTP, sin Prisma y sin reloj propio (el tiempo no interviene en el núcleo). Los services lo importan - es la capa de dominio de Clean Architecture, por debajo de services. Su contrato central es un reducer:
 
 ```ts
-applyMove(state: GameState, move: Move, now: Date): MoveResult
+applyMove(state: GameState, move: Move): MoveResult
 ```
+
+> *Nota (F5-4)*: se eliminó el parámetro `now: Date` que esbozaba este documento. Ninguna regla del núcleo depende del tiempo, así que el motor no recibe reloj: el cronómetro (`startedAt`/`lastMoveAt`/`finishedAt`) vive en el `Match` y la capa de servicio (F5-6), no en el dominio puro.
 
 - **Server-authoritative**: el cliente propone movimientos; solo el motor decide su legalidad.
 
