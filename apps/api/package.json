@@ -11,7 +11,7 @@
     "test": "vitest run tests/e2e tests/unit",
     "test:integration": "vitest run tests/integration",
     "test:watch": "vitest",
-    "test:coverage": "vitest run tests/e2e --coverage"
+    "test:coverage": "vitest run tests/e2e tests/unit --coverage"
   },
   "keywords": [],
   "author": "",
