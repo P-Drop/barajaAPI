@@ -10,7 +10,7 @@ El motor es un módulo **puro** en `apps/api/src/games/orda/`: sin HTTP, sin Pri
 applyMove(state: GameState, move: Move): MoveResult
 ```
 
-> *Nota (F5-4)*: se eliminó el parámetro `now: Date` que esbozaba este documento. Ninguna regla del núcleo depende del tiempo, así que el motor no recibe reloj: el cronómetro (`startedAt`/`lastMoveAt`/`finishedAt`) vive en el `Match` y la capa de servicio (F5-6), no en el dominio puro.
+> _Nota (F5-4)_: se eliminó el parámetro `now: Date` que esbozaba este documento. Ninguna regla del núcleo depende del tiempo, así que el motor no recibe reloj: el cronómetro (`startedAt`/`lastMoveAt`/`finishedAt`) vive en el `Match` y la capa de servicio (F5-6), no en el dominio puro.
 
 - **Server-authoritative**: el cliente propone movimientos; solo el motor decide su legalidad.
 
