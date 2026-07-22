@@ -21,29 +21,37 @@ applyMove(state: GameState, move: Move): MoveResult
 ### GameState (snapshot serializable)
 
 - `schemaVersion`: detección de snapshots de forma antigua (ADR-0001).
-- Pilas: `cross[5]` (posición vacía = hueco), `corners` (una por palo), `stock`, `discard`, `extraSlots` (0-2 huecos según comodines usados).
+- Pilas: `cross[5]` (posición vacía = hueco), `corners` (una por palo), `stock`, `discard`, `extra` (0-2 slots desbloquados con estrellas; cada uno `null` = vacío o una carta).
 - `hand`: carta en mano, o `null`.
 - `round`: 0 - 45.
 - Estrellas: `starsAvailable` y `starsUsed` (la tabla de puntuación necesita ambas).
-- Logro: flags del detector de _Escalera mecánica_ (progreso de la secuencia en la ronda actual) y si el movimiento en bloque está habilitado para esta partida.
+- Logro: `stairwayUnlocked` (bool, habilita el movimiento en bloque en esta partida) y `stairwayBuilding` ( `{ pile, count } | null`, prograso de la maniobra en curso).
 - `moveCount` y `status` (`IN_PROGRESS | WON | LOST`).
+
+### Achievements
+
+El logro pertenece al perfil: `createGame(rng, achievements: Achievements)` siembra `stairwayUnlocked`; si se desbloquea durante la partida, el servicio lo persiste al perfil (F5-7).
 
 ### Move (unión discriminada)
 
-| **Tipo**              | **Payload**                   | **Regla que implementa**                       |
-| --------------------- | ----------------------------- | ---------------------------------------------- |
-| `DRAW`                | -                             | Robar de la pila (inicia la ronda siguiente)   |
-| `PLACE`               | `from`, `to`                  | Colocar la carta superior de un montón en otro |
-| `MOVE_STACK`          | `fromPile`, `cardIndex`, `to` | Movimiento en bloque (requiere el logro)       |
-| `USE_STAR_EXTRA_SLOT` | -                             | Desbloquear el espacio extra                   |
-| `USE_STAR_RECOVER`    | `cardId`                      | Recuperar una carta del descarte -> mano       |
-| `ABANDON`             | -                             | Abandono (botón siempre visible)               |
+| **Tipo**              | **Payload**                       | **Regla que implementa**                       |
+| --------------------- | --------------------------------- | ---------------------------------------------- |
+| `DRAW`                | -                                 | Robar de la pila (inicia la ronda siguiente)   |
+| `PLACE`               | `from`, `to`                      | Colocar la carta superior de un montón en otro |
+| `MOVE_STACK`          | `fromPile`, `cardIndex`, `toPile` | Movimiento en bloque (requiere el logro)       |
+| `USE_STAR_EXTRA_SLOT` | -                                 | Desbloquear el espacio extra                   |
+| `USE_STAR_RECOVER`    | `cardId`                          | Recuperar una carta del descarte -> mano       |
+| `ABANDON`             | -                                 | Abandono (botón siempre visible)               |
 
-`from`/`to` referencian **posiciones** (`cross:2`, `corner:OROS`, `discard`, `extra:0`), nunca cartas: la carta movida es siempre la superior del montón de origen.
+`from`/`to` referencian **posiciones** (`cross:2`, `corner:OROS`, `discard`, `extra:0`), nunca cartas: la carta movida es siempre la superior del montón de origen, salvo dos casos: - `MOVE_STACK` mueve una carta interior de la cruz junto con las de encima. - `USE_STAR_RECOVER` toma una carta **elegida por `cardId`** de cualquier posición del descarte.
 
 ### MoveResult
 
 Éxito con el `GameState` nuevo, o error de dominio tipado con el motivo de la ilegalidad. El service lo traduce a `DomainError` -> 400 con mensaje en español, igual que el resto de la API.
+
+### Puntuación (`scoring.ts`)
+
+`computeStars(won, starsUsed, elapsedSeconds)`, función pura; el tiempo se **inyecta** (el motor no tiene reloj) y la llama el servicio al finalizar la partida (**F5-6**).
 
 ### Match (Prisma)
 
