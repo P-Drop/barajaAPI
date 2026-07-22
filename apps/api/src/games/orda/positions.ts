@@ -25,6 +25,9 @@ export const topCardAt = (
       return state.discard.length > 0
         ? state.discard[state.discard.length - 1]
         : null;
+
+    case 'extra':
+      return state.extra[pos.index] ?? null;
   }
 };
 
@@ -50,5 +53,8 @@ export const canPlaceAt = (
 
     case 'discard':
       return true;
+
+    case 'extra':
+      return state.extra[to.index] === null;
   }
 };

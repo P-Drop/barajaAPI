@@ -14,19 +14,28 @@ export interface GameState {
   starsUsed: number;
   moveCount: number;
   status: 'IN_PROGRESS' | 'WON' | 'LOST';
+  extra: (Card | null)[]; // slots desbloqueados; null = vacío, Card = ocupado
+  stairwayUnlocked: boolean; // logro activo (se siembra del perfil en createGame)
+  stairwayBuilding: { pile: number; count: number } | null; // escalera en curso
 }
 
 export type Position =
   | { zone: 'cross'; index: number } // 0..4
   | { zone: 'corner'; suit: Suit }
-  | { zone: 'discard' };
+  | { zone: 'discard' }
+  | { zone: 'extra'; index: number };
 
 // En F5-5 se añade { zone: 'extra'; index }
 
 export type Move =
   | { type: 'DRAW' }
   | { type: 'PLACE'; from: Position | { zone: 'hand' }; to: Position }
+  | { type: 'USE_STAR_EXTRA_SLOT' }
+  | { type: 'USE_STAR_RECOVER'; cardId: Card }
+  | { type: 'MOVE_STACK'; fromPile: number; cardIndex: number; toPile: number }
   | { type: 'ABANDON' };
 
 export type MoveResult =
   { ok: true; state: GameState } | { ok: false; reason: string }; // service -> DomainError -> 400
+
+export type Achievements = { stairway: boolean };

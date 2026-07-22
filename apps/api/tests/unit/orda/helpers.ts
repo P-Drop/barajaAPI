@@ -1,4 +1,5 @@
-import type { GameState } from '../../../src/games/orda/types.js';
+import type { GameState, Move } from '../../../src/games/orda/types.js';
+import { applyMove } from '../../../src/games/orda/applyMove.js';
 
 export const countCards = (state: GameState): number => {
   const crossCards = state.cross.reduce((sum, pile) => sum + pile.length, 0);
@@ -7,6 +8,7 @@ export const countCards = (state: GameState): number => {
     0,
   );
   const handCard = state.hand ? 1 : 0;
+  const extraCards = state.extra.filter((c) => c !== null).length;
 
   return (
     crossCards +
@@ -15,7 +17,8 @@ export const countCards = (state: GameState): number => {
     cornerCards +
     handCard +
     state.starsAvailable +
-    state.starsUsed
+    state.starsUsed +
+    extraCards
   );
 };
 
@@ -31,5 +34,16 @@ export const baseState = (over: Partial<GameState> = {}): GameState => ({
   starsUsed: 0,
   moveCount: 0,
   status: 'IN_PROGRESS',
+  extra: [],
+  stairwayUnlocked: false,
+  stairwayBuilding: null,
   ...over,
 });
+
+export const applyOk = (state: GameState, move: Move): GameState => {
+  const result = applyMove(state, move);
+  if (!result.ok) {
+    throw new Error(`Movimiento ilegal inesperado: ${result.reason}`);
+  }
+  return result.state;
+};

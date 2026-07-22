@@ -115,7 +115,7 @@ describe('dealGame', () => {
 
 describe('createGame', () => {
   it('esquinas a cero y estado inicial correcto', () => {
-    const game = createGame(seededRng(1));
+    const game = createGame(seededRng(1), { stairway: false });
 
     expect(Object.values(game.corners)).toEqual([0, 0, 0, 0]);
 

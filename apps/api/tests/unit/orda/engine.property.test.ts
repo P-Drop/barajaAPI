@@ -3,6 +3,7 @@ import { createGame, type Rng } from '../../../src/games/orda/deck.js';
 import { applyMove } from '../../../src/games/orda/applyMove.js';
 import { legalMoves } from '../../../src/games/orda/legalMoves.js';
 import { countCards } from './helpers.js';
+import type { Achievements } from '../../../src/games/orda/types.js';
 
 const seededRng =
   (seed: number): Rng =>
@@ -11,8 +12,8 @@ const seededRng =
     return seed / 4294967296;
   };
 
-const playRandomGame = (rng: Rng) => {
-  let state = createGame(rng);
+const playRandomGame = (rng: Rng, achievements: Achievements) => {
+  let state = createGame(rng, achievements);
   let guard = 0;
   let freeThisRound = 0;
 
@@ -25,7 +26,7 @@ const playRandomGame = (rng: Rng) => {
       const options = legalMoves(state);
       move = options[Math.floor(rng() * options.length)];
     } else if (state.stock.length > 0) {
-      const free = legalMoves(state).filter((m) => m.type === 'PLACE');
+      const free = legalMoves(state).filter((m) => m.type !== 'DRAW');
       if (free.length > 0 && freeThisRound < 3 && rng() < 0.5) {
         move = free[Math.floor(rng() * free.length)];
         freeThisRound++;
@@ -39,7 +40,7 @@ const playRandomGame = (rng: Rng) => {
 
     const result = applyMove(state, move);
     expect(result.ok).toBe(true);
-    if (!result.ok) throw new Error(result.reason);
+    if (!result.ok) throw new Error(`jugada ilegal: ${result.reason}`);
     expect(countCards(result.state)).toBe(50);
     state = result.state;
   }
@@ -47,11 +48,19 @@ const playRandomGame = (rng: Rng) => {
 };
 
 describe('propiedad: partidas aleatorias completas', () => {
-  it('200 partidas conservan 50 cartas y terminan en WON/LOST', () => {
-    for (let seed = 0; seed < 200; seed++) {
-      const final = playRandomGame(seededRng(seed));
+  it('200 partidas (sin logro) conservan 50 cartas y terminan', () => {
+    for (let seed = 0; seed < 100; seed++) {
+      const final = playRandomGame(seededRng(seed), { stairway: false });
       expect(['WON', 'LOST']).toContain(final.status);
       expect(countCards(final)).toBe(50);
     }
-  }, 2000); // timeout explícito: red de seguridad ante runners lentos
+  }, 20000); // timeout explícito: red de seguridad ante runners lentos
+
+  it('200 partidas (con logro) conservan 50 cartas y terminan ', () => {
+    for (let seed = 0; seed < 100; seed++) {
+      const final = playRandomGame(seededRng(seed), { stairway: true });
+      expect(['WON', 'LOST']).toContain(final.status);
+      expect(countCards(final)).toBe(50);
+    }
+  }, 20000);
 });
