@@ -1,4 +1,10 @@
-import { type Card, type Suit, type GameState, SUITS } from './types.js';
+import {
+  type Card,
+  type Suit,
+  type GameState,
+  SUITS,
+  type Achievements,
+} from './types.js';
 import { isJoker } from './card.js';
 
 export type Rng = () => number;
@@ -22,7 +28,10 @@ export const shuffle = (cards: readonly Card[], rng: Rng): Card[] => {
   return result;
 };
 
-export const dealGame = (deck: Card[]): GameState => {
+export const dealGame = (
+  deck: Card[],
+  achievements: Achievements = { stairway: false },
+): GameState => {
   const cross: Card[][] = [];
   const corners = {
     OROS: 0,
@@ -42,6 +51,8 @@ export const dealGame = (deck: Card[]): GameState => {
     cross.push([deck[i]]);
   }
 
+  const { stairway } = achievements;
+
   return {
     schemaVersion: 1,
     cross,
@@ -54,9 +65,15 @@ export const dealGame = (deck: Card[]): GameState => {
     starsUsed: 0,
     moveCount: 0,
     status: 'IN_PROGRESS',
+    extra: [],
+    stairwayUnlocked: stairway,
+    stairwayBuilding: null,
   };
 };
 
-export const createGame = (rng: Rng = Math.random): GameState => {
-  return dealGame(shuffle(buildDeck(), rng));
+export const createGame = (
+  rng: Rng = Math.random,
+  achievements: Achievements = { stairway: false },
+): GameState => {
+  return dealGame(shuffle(buildDeck(), rng), achievements);
 };
