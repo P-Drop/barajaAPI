@@ -5,12 +5,16 @@ import { deckQuerySchema } from '../schemas/deckQuerySchema.js';
 import { registerSchema } from '../schemas/registerSchema.js';
 import { userResponseSchema } from '../schemas/userResponseSchema.js';
 import { loginSchema } from '../schemas/loginSchema.js';
+import { matchViewSchema } from '../schemas/matchViewSchema.js';
+import { matchIdParamSchema } from '../schemas/matchIdParamSchema.js';
+import { moveRequestSchema } from '../schemas/moveSchema.js';
 
 export const registry = new OpenAPIRegistry();
 
 // Esquemas
 const errorSchema = z.object({ error: z.string() }).openapi('Error');
 const userSchema = registry.register('User', userResponseSchema);
+const matchView = registry.register('MatchView', matchViewSchema);
 
 // Respuesta 200 común: array de cartas
 const okDeck = {
@@ -131,5 +135,64 @@ registry.registerPath({
       content: { 'application/json': { schema: userSchema } },
     },
     401: errorResponse('Credenciales inválidas'),
+  },
+});
+
+// Crear partida
+registry.registerPath({
+  method: 'post',
+  path: '/api/v1/matches',
+  summary: 'Crear una partida de Solitario Orda (el servidor baraja)',
+  tags: ['Matches'],
+  security: [{ bearerAuth: [] }],
+  responses: {
+    201: {
+      description: 'Partida creada',
+      content: { 'application/json': { schema: matchView } },
+    },
+    401: errorResponse('Credenciales inválidas'),
+    409: errorResponse('Ya tienes una partida en curso'),
+  },
+});
+
+// Consultar partida
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/matches/{id}',
+  summary: 'Obtener la vista de una partida propia',
+  tags: ['Matches'],
+  security: [{ bearerAuth: [] }],
+  request: { params: matchIdParamSchema },
+  responses: {
+    200: {
+      description: 'Vista de la partida',
+      content: { 'application/json': { schema: matchView } },
+    },
+    400: errorResponse('Parámetros inválidos'),
+    401: errorResponse('Credenciales inválidas'),
+    404: errorResponse('Partida no encontrada'),
+  },
+});
+
+// Aplicar movimiento
+registry.registerPath({
+  method: 'post',
+  path: '/api/v1/matches/{id}/moves',
+  summary: 'Aplicar un movimiento y obtener la vista actualizada',
+  tags: ['Matches'],
+  security: [{ bearerAuth: [] }],
+  request: {
+    params: matchIdParamSchema,
+    body: { content: { 'application/json': { schema: moveRequestSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Movimiento aplicado',
+      content: { 'application/json': { schema: matchView } },
+    },
+    400: errorResponse('Movimiento o parámetros inválidos'),
+    401: errorResponse('Credenciales inválidas'),
+    404: errorResponse('Partida no encontrada'),
+    409: errorResponse('Conflicto de versión o partida expirada'),
   },
 });

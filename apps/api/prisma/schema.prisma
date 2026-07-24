@@ -21,6 +21,13 @@ enum Suit {
   BASTOS
 }
 
+enum MatchStatus {
+  IN_PROGRESS
+  WON
+  LOST
+  ABANDONED
+}
+
 model Card {
   id      Int     @id @default(autoincrement())
   value   Int?
@@ -42,4 +49,22 @@ model User {
   achievements       String[] @default([])
   createdAt          DateTime @default(now())
   isActive           Boolean  @default(true)
+  matches            Match[]
 }
+
+model Match {
+  id          String        @id @default(uuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  state       Json
+  version     Int           @default(0)
+  status      MatchStatus   @default(IN_PROGRESS)
+  stars       Int           @default(0)
+  moveCount   Int           @default(0)
+  startedAt   DateTime      @default(now())
+  lastMoveAt  DateTime      @default(now())
+  finishedAt  DateTime?
+
+  @@index([userId])
+}
+

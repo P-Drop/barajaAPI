@@ -3,6 +3,7 @@ import { Router } from 'express';
 import healthRoutes from './healthRoutes.js';
 import cardRoutes from './cardRoutes.js';
 import authRoutes from './authRoutes.js';
+import matchRoutes from './matchRoutes.js';
 
 import { apiLimiter } from '../middlewares/rateLimiter.js';
 import { authLimiter } from '../middlewares/authLimiter.js';
@@ -17,5 +18,8 @@ router.use('/v1/deck', apiLimiter, cardRoutes);
 
 // Gestión de usuarios
 router.use('/v1/auth', authLimiter, authRoutes);
+
+// Partida solitario Orda
+router.use('/v1/matches', apiLimiter, matchRoutes);
 
 export default router;
