@@ -44,6 +44,10 @@ export const applyMove = (state: GameState, move: Move): MoveResult => {
     case 'PLACE': {
       const { from, to } = move;
 
+      // Guard(no-op): discard-discard
+      if (from.zone === 'discard' && to.zone == 'discard')
+        return reject('origen y destino son el descarte');
+
       // (1) Bloqueo: con carta en mano, solo se puede jugar esa carta
       if (next.hand !== null && from.zone !== 'hand') {
         return reject('tienes una carta en mano: solo puedes jugar esta');

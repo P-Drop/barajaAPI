@@ -386,13 +386,29 @@ describe('Movimientos entre montones', () => {
     expect(state.corners['ESPADAS']).toBe(5);
   });
 
-  it('PLACE a un índice de cruz inválido -> rechazado', () => {
+  it('a un índice de cruz inválido -> rechazado', () => {
     const result = applyMove(baseState({ hand: 'OROS-5' }), {
       type: 'PLACE',
       from: { zone: 'hand' },
       to: { zone: 'cross', index: 9 },
     });
     expect(result.ok).toBe(false);
+  });
+
+  it('descarte a descarte (misma carta) -> rechazado', () => {
+    const result = applyMove(
+      baseState({
+        discard: ['COPAS-4', 'BASTOS-8'],
+      }),
+      {
+        type: 'PLACE',
+        from: { zone: 'discard' },
+        to: { zone: 'discard' },
+      },
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.reason).toBe('origen y destino son el descarte');
   });
 });
 
@@ -459,7 +475,7 @@ describe('Orígenes vacíos o inválidos', () => {
     ['mano vacía', { hand: null }, { zone: 'hand' } as const],
     ['cruz vacía', {}, { zone: 'cross', index: 0 } as const],
     ['esquina vacía', {}, { zone: 'corner', suit: 'BASTOS' } as const],
-    ['descarte vacío', {}, { zone: 'discard' } as const],
+    ['descarte vacío', {}, { zone: 'cross', index: 0 } as const],
   ])('PLACE desde %s -> rechazado', (_n, over, from) => {
     const result = applyMove(baseState(over), {
       type: 'PLACE',

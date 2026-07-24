@@ -24,6 +24,7 @@ const envSchema = z.object({
   SENTRY_RELEASE: z.string().optional(),
   JWT_SECRET: z.string().min(32),
   JWT_EXPIRES_IN: z.string().default('7d'),
+  MATCH_TTL_MINUTES: z.coerce.number().int().positive().default(15),
 });
 
 const parsed = envSchema.safeParse(process.env);
