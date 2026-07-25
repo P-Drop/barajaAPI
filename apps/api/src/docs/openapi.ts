@@ -10,5 +10,5 @@ export const openApiDocument = new OpenApiGeneratorV31(
     version: '1.0.0',
     description: 'API REST de la baraja española',
   },
-  servers: [{ url: 'http://localhost:3000' }],
+  servers: [{ url: '/' }],
 });
