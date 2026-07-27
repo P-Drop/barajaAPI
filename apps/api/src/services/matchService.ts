@@ -78,6 +78,12 @@ const expire = async (
   const next = result.state;
 
   const finishedAt = new Date(match.lastMoveAt.getTime() + TTL_MS);
+
+  // TIEMPO JUGADO = actividad real (start -> última jugada, sin TTL)
+  const playSeconds = Math.floor(
+    (match.lastMoveAt.getTime() - match.startedAt.getTime()) / 1000,
+  );
+
   const data = {
     state: next,
     status: 'ABANDONED' as MatchStatus,
@@ -87,11 +93,16 @@ const expire = async (
     finishedAt,
   };
 
-  const count = await matchRepository.updateWithVersion(
+  const count = await matchRepository.consolidateFinish(
     match.id,
     userId,
     match.version,
     data,
+    {
+      stars: 0,
+      playSeconds,
+      unlockStairway: next.stairwayUnlocked,
+    },
   );
   if (count === 0) {
     const fresh = await matchRepository.findByIdForUser(match.id, userId);
@@ -199,12 +210,28 @@ export const matchService = {
     };
 
     // 6. Escritura atómica con guard de versión
-    const count = await matchRepository.updateWithVersion(
-      matchId,
-      userId,
-      expectedVersion,
-      data,
-    );
+    // Transacción para terminar la partida
+    let count: number;
+    if (finished) {
+      count = await matchRepository.consolidateFinish(
+        matchId,
+        userId,
+        expectedVersion,
+        data,
+        {
+          stars,
+          playSeconds: elapsedSeconds,
+          unlockStairway: next.stairwayUnlocked,
+        },
+      );
+    } else {
+      count = await matchRepository.updateWithVersion(
+        matchId,
+        userId,
+        expectedVersion,
+        data,
+      );
+    }
     if (count === 0)
       throw new ConflictError('La partida cambió; recarga y reintenta');
 

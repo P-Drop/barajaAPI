@@ -23,7 +23,7 @@ const playerViewSchema = z.object({
 });
 
 export const matchViewSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   version: z.number(),
   status: z.enum(['IN_PROGRESS', 'WON', 'LOST', 'ABANDONED']),
   stars: z.number(),

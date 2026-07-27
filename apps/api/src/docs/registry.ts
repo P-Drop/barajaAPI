@@ -8,6 +8,10 @@ import { loginSchema } from '../schemas/loginSchema.js';
 import { matchViewSchema } from '../schemas/matchViewSchema.js';
 import { matchIdParamSchema } from '../schemas/matchIdParamSchema.js';
 import { moveRequestSchema } from '../schemas/moveSchema.js';
+import { profileResponseSchema } from '../schemas/profileResponseSchema.js';
+import { profileUpdateSchema } from '../schemas/profileUpdateSchema.js';
+import { deactivateSchema } from '../schemas/deactivateSchema.js';
+import { rankingQuerySchema } from '../schemas/rankingQuerySchema.js';
 
 export const registry = new OpenAPIRegistry();
 
@@ -15,6 +19,7 @@ export const registry = new OpenAPIRegistry();
 const errorSchema = z.object({ error: z.string() }).openapi('Error');
 const userSchema = registry.register('User', userResponseSchema);
 const matchView = registry.register('MatchView', matchViewSchema);
+const profile = registry.register('Profile', profileResponseSchema);
 
 // Respuesta 200 común: array de cartas
 const okDeck = {
@@ -194,5 +199,98 @@ registry.registerPath({
     401: errorResponse('Credenciales inválidas'),
     404: errorResponse('Partida no encontrada'),
     409: errorResponse('Conflicto de versión o partida expirada'),
+  },
+});
+
+// GET /profile
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/profile',
+  summary: 'Perfil propio',
+  tags: ['Profile'],
+  security: [{ bearerAuth: [] }],
+  responses: {
+    200: {
+      description: 'Perfil',
+      content: { 'application/json': { schema: profile } },
+    },
+    401: errorResponse('Credenciales inválidas'),
+  },
+});
+
+// PATCH /profile
+registry.registerPath({
+  method: 'patch',
+  path: '/api/v1/profile',
+  summary: 'Editar avatar',
+  tags: ['Profile'],
+  security: [{ bearerAuth: [] }],
+  request: {
+    body: {
+      content: {
+        'application/json': { schema: profileUpdateSchema },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Perfil actualizado',
+      content: { 'application/json': { schema: profile } },
+    },
+    400: errorResponse('Parámetros inválidos'),
+    401: errorResponse('Credenciales inválidas'),
+  },
+});
+
+// DELETE /profile
+registry.registerPath({
+  method: 'delete',
+  path: '/api/v1/profile',
+  summary: 'Desactivar cuenta (reconfirma contraseña)',
+  tags: ['Profile'],
+  security: [{ bearerAuth: [] }],
+  request: {
+    body: {
+      content: {
+        'application/json': { schema: deactivateSchema },
+      },
+    },
+  },
+  responses: {
+    204: { description: 'Cuenta desactivada' },
+    400: errorResponse('Parámetros inválidos'),
+    401: errorResponse('Credenciales inválidas'),
+  },
+});
+
+// GET /ranking
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/ranking',
+  summary: 'Ranking público de jugadores',
+  tags: ['Ranking'],
+  request: { query: rankingQuerySchema },
+  responses: {
+    200: {
+      description: 'Página del ranking',
+      content: {
+        'application/json': {
+          schema: z.object({
+            total: z.number(),
+            limit: z.number(),
+            offset: z.number(),
+            entries: z.array(
+              z.object({
+                nickname: z.string(),
+                avatar: z.string(),
+                stars: z.number(),
+                totalPlaySeconds: z.number(),
+              }),
+            ),
+          }),
+        },
+      },
+    },
+    400: errorResponse('Parámetros inválidos'),
   },
 });

@@ -14,6 +14,7 @@ vi.mock('../../src/repositories/matchRepository.js', () => ({
     create: vi.fn(),
     findByIdForUser: vi.fn(),
     updateWithVersion: vi.fn(),
+    consolidateFinish: vi.fn(),
     findActiveByUser: vi.fn(),
   },
 }));
@@ -92,17 +93,18 @@ describe('GET /api/v1/matches/:id', () => {
     vi.mocked(matchRepository.findByIdForUser).mockResolvedValueOnce(
       stale as never,
     );
-    vi.mocked(matchRepository.updateWithVersion).mockResolvedValueOnce(1);
+    vi.mocked(matchRepository.consolidateFinish).mockResolvedValueOnce(1);
 
     const res = await request(app).get(`/api/v1/matches/${stale.id}`).set(auth);
 
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ABANDONED');
-    expect(matchRepository.updateWithVersion).toHaveBeenCalledWith(
+    expect(matchRepository.consolidateFinish).toHaveBeenCalledWith(
       stale.id,
       userId,
       0,
-      expect.objectContaining({ status: 'ABANDONED', stars: 0 }),
+      expect.objectContaining({ status: 'ABANDONED', stars: 0 }), // matchData
+      expect.objectContaining({ stars: 0 }), // userDelta
     );
   });
 
@@ -247,7 +249,7 @@ describe('POST /api/v1/matches/:id/moves', () => {
     vi.mocked(matchRepository.findByIdForUser).mockResolvedValueOnce(
       match as never,
     );
-    vi.mocked(matchRepository.updateWithVersion).mockResolvedValueOnce(1);
+    vi.mocked(matchRepository.consolidateFinish).mockResolvedValueOnce(1);
 
     const res = await request(app)
       .post(`/api/v1/matches/${match.id}/moves`)
@@ -271,7 +273,7 @@ describe('POST /api/v1/matches/:id/moves', () => {
     vi.mocked(matchRepository.findByIdForUser).mockResolvedValueOnce(
       match as never,
     );
-    vi.mocked(matchRepository.updateWithVersion).mockResolvedValueOnce(1);
+    vi.mocked(matchRepository.consolidateFinish).mockResolvedValueOnce(1);
 
     const res = await request(app)
       .post(`/api/v1/matches/${match.id}/moves`)
