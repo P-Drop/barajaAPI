@@ -74,6 +74,7 @@ registry.registerPath({
   tags: ['Auth'],
   request: {
     body: {
+      required: true,
       content: {
         'application/json': { schema: registerSchema },
       },
@@ -104,6 +105,7 @@ registry.registerPath({
   tags: ['Auth'],
   request: {
     body: {
+      required: true,
       content: {
         'application/json': { schema: loginSchema },
       },
@@ -188,7 +190,10 @@ registry.registerPath({
   security: [{ bearerAuth: [] }],
   request: {
     params: matchIdParamSchema,
-    body: { content: { 'application/json': { schema: moveRequestSchema } } },
+    body: { 
+      required: true,
+      content: { 'application/json': { schema: moveRequestSchema } }
+    },
   },
   responses: {
     200: {
@@ -227,6 +232,7 @@ registry.registerPath({
   security: [{ bearerAuth: [] }],
   request: {
     body: {
+      required: true,
       content: {
         'application/json': { schema: profileUpdateSchema },
       },
@@ -251,6 +257,7 @@ registry.registerPath({
   security: [{ bearerAuth: [] }],
   request: {
     body: {
+      required: true,
       content: {
         'application/json': { schema: deactivateSchema },
       },
