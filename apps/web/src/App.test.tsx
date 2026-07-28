@@ -31,4 +31,17 @@ describe('Flujo de login', () => {
       await screen.findByRole('heading', { name: 'Ricou' }),
     ).toBeInTheDocument();
   });
+
+  it('token caducado al rehidratar -> vuelve a login y limpia el token', async () => {
+    sessionStorage.setItem('baraja_token', 'caducado');
+
+    vi.mocked(api.getProfile).mockRejectedValue(new api.ApiError(401));
+
+    renderWithProviders(<App />, { route: '/profile' });
+
+    expect(
+      await screen.findByLabelText('Nombre de usuario'),
+    ).toBeInTheDocument();
+    expect(sessionStorage.getItem('baraja_token')).toBeNull();
+  });
 });

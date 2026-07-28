@@ -54,4 +54,26 @@ describe('RegisterPage', () => {
     );
     expect(api.login).not.toHaveBeenCalled();
   });
+
+  it.each([
+    [400, /revisa los datos/i, false],
+    [429, /demasiados intentos/i, false],
+    [500, /inténtalo más tarde/i, true],
+  ])('error %i muestra su mensaje', async (status, msg, fallback) => {
+    vi.mocked(api.register).mockRejectedValue(
+      fallback ? new Error('network') : new api.ApiError(status),
+    );
+
+    const user = userEvent.setup();
+
+    renderWithProviders(<RegisterPage />, { route: '/register' });
+    await user.type(screen.getByLabelText('Nombre de usuario'), 'testUser');
+    await user.type(screen.getByLabelText('Contraseña'), 'x');
+    await user.click(
+      screen.getByRole('button', { name: 'Avatar 01_oros_saco.webp' }),
+    );
+    await user.click(screen.getByRole('button', { name: 'Crear cuenta' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(msg);
+  });
 });

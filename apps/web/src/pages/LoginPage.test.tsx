@@ -43,4 +43,34 @@ describe('LoginPage', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent(/incorrectos/i);
   });
+
+  it('muestra error de rate limit (429)', async () => {
+    vi.mocked(api.login).mockRejectedValue(new api.ApiError(429));
+
+    const user = userEvent.setup();
+
+    renderWithProviders(<LoginPage />, { route: '/login' });
+    await user.type(screen.getByLabelText('Nombre de usuario'), 'testUser');
+    await user.type(screen.getByLabelText('Contraseña'), 'x');
+    await user.click(screen.getByRole('button', { name: 'Entrar' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /demasiados intentos/i,
+    );
+  });
+
+  it('error inesperado (no ApiError) -> mensaje genérico', async () => {
+    vi.mocked(api.login).mockRejectedValue(new Error('network'));
+
+    const user = userEvent.setup();
+
+    renderWithProviders(<LoginPage />, { route: '/login' });
+    await user.type(screen.getByLabelText('Nombre de usuario'), 'testUser');
+    await user.type(screen.getByLabelText('Contraseña'), 'x');
+    await user.click(screen.getByRole('button', { name: 'Entrar' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /inténtalo más tarde/i,
+    );
+  });
 });
