@@ -47,7 +47,6 @@ export async function getShuffledDeck(short = false): Promise<Deck> {
   return fetchDeck('/api/v1/deck/shuffle', short);
 }
 
-
 // Users
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(new URL(path, baseUrl), init);
@@ -62,15 +61,15 @@ const jsonPost = (body: unknown): RequestInit => ({
 });
 
 export function register(body: RegisterBody): Promise<RegisterResponse> {
-  return apiFetch('/api/v1/auth/register', jsonPost(body))
+  return apiFetch('/api/v1/auth/register', jsonPost(body));
 }
 
 export function login(body: LoginBody): Promise<LoginResponse> {
-  return apiFetch('/api/v1/auth/login', jsonPost(body))
+  return apiFetch('/api/v1/auth/login', jsonPost(body));
 }
 
 export function getProfile(token: string): Promise<Profile> {
   return apiFetch('/api/v1/profile', {
-    headers: { Authorization: `Bearer ${token}`}
+    headers: { Authorization: `Bearer ${token}` },
   });
 }
