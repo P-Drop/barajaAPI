@@ -7,6 +7,8 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 import * as Sentry from '@sentry/react';
+import { AuthProvider } from './auth/AuthProvider.tsx';
+import { BrowserRouter } from 'react-router-dom';
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN || undefined,
@@ -16,7 +18,11 @@ Sentry.init({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Sentry.ErrorBoundary fallback={<p>Algo ha ido mal. Recarga la página.</p>}>
-      <App />
+      <BrowserRouter>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BrowserRouter>
     </Sentry.ErrorBoundary>
   </StrictMode>,
 );

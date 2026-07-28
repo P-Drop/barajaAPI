@@ -15,6 +15,16 @@ export default defineConfig(
     extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite],
     languageOptions: { globals: globals.browser },
   },
+  {
+    files: [
+      'apps/web/**/*.test.{ts,tsx}',
+      'apps/web/src/test/**',
+      'apps/web/**/__mocks__/**',
+    ],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
   prettier,
   {
     rules: {
