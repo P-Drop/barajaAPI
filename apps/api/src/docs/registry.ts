@@ -190,9 +190,9 @@ registry.registerPath({
   security: [{ bearerAuth: [] }],
   request: {
     params: matchIdParamSchema,
-    body: { 
+    body: {
       required: true,
-      content: { 'application/json': { schema: moveRequestSchema } }
+      content: { 'application/json': { schema: moveRequestSchema } },
     },
   },
   responses: {
