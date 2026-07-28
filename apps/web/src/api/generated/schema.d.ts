@@ -128,10 +128,702 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registrar un nuevo usuario */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        nickname: string;
+                        password: string;
+                        avatar: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Nuevo usuario registrado */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["User"];
+                    };
+                };
+                /** @description Parámetros inválidos */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description El nickname ya está en uso */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Iniciar sesión */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        nickname: string;
+                        password: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Login correcto */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            token: string;
+                            user: components["schemas"]["User"];
+                        };
+                    };
+                };
+                /** @description Parametrós inválidos */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Demasiadas peticiones */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Usuario autenticado actual */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Usuario del token */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["User"];
+                    };
+                };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Crear una partida de Solitario Orda (el servidor baraja) */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Partida creada */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MatchView"];
+                    };
+                };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Ya tienes una partida en curso */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/matches/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtener la vista de una partida propia */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Vista de la partida */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MatchView"];
+                    };
+                };
+                /** @description Parámetros inválidos */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Partida no encontrada */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/matches/{id}/moves": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Aplicar un movimiento y obtener la vista actualizada */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        expectedVersion: number;
+                        move: {
+                            /** @enum {string} */
+                            type: "DRAW";
+                        } | {
+                            /** @enum {string} */
+                            type: "PLACE";
+                            from: {
+                                /** @enum {string} */
+                                zone: "cross";
+                                index: number;
+                            } | {
+                                /** @enum {string} */
+                                zone: "corner";
+                                /** @enum {string} */
+                                suit: "OROS" | "COPAS" | "ESPADAS" | "BASTOS";
+                            } | {
+                                /** @enum {string} */
+                                zone: "discard";
+                            } | {
+                                /** @enum {string} */
+                                zone: "extra";
+                                index: number;
+                            } | {
+                                /** @enum {string} */
+                                zone: "hand";
+                            };
+                            to: {
+                                /** @enum {string} */
+                                zone: "cross";
+                                index: number;
+                            } | {
+                                /** @enum {string} */
+                                zone: "corner";
+                                /** @enum {string} */
+                                suit: "OROS" | "COPAS" | "ESPADAS" | "BASTOS";
+                            } | {
+                                /** @enum {string} */
+                                zone: "discard";
+                            } | {
+                                /** @enum {string} */
+                                zone: "extra";
+                                index: number;
+                            };
+                        } | {
+                            /** @enum {string} */
+                            type: "USE_STAR_EXTRA_SLOT";
+                        } | {
+                            /** @enum {string} */
+                            type: "USE_STAR_RECOVER";
+                            cardId: string;
+                        } | {
+                            /** @enum {string} */
+                            type: "MOVE_STACK";
+                            fromPile: number;
+                            cardIndex: number;
+                            toPile: number;
+                        } | {
+                            /** @enum {string} */
+                            type: "ABANDON";
+                        };
+                    };
+                };
+            };
+            responses: {
+                /** @description Movimiento aplicado */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MatchView"];
+                    };
+                };
+                /** @description Movimiento o parámetros inválidos */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Partida no encontrada */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Conflicto de versión o partida expirada */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Perfil propio */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Perfil */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Profile"];
+                    };
+                };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Desactivar cuenta (reconfirma contraseña) */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        password: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Cuenta desactivada */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Parámetros inválidos */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Editar avatar */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        avatar: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Perfil actualizado */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Profile"];
+                    };
+                };
+                /** @description Parámetros inválidos */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/api/v1/ranking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ranking público de jugadores */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                    offset?: number | null;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Página del ranking */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            total: number;
+                            limit: number;
+                            offset: number;
+                            entries: {
+                                nickname: string;
+                                avatar: string;
+                                stars: number;
+                                totalPlaySeconds: number;
+                            }[];
+                        };
+                    };
+                };
+                /** @description Parámetros inválidos */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        User: {
+            /** Format: uuid */
+            id: string;
+            nickname: string;
+            avatar: string;
+            stars: number;
+            /** Format: date-time */
+            createdAt: string;
+            totalPlaySeconds: number;
+        };
+        MatchView: {
+            /** Format: uuid */
+            id: string;
+            version: number;
+            /** @enum {string} */
+            status: "IN_PROGRESS" | "WON" | "LOST" | "ABANDONED";
+            stars: number;
+            moveCount: number;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            lastMoveAt: string;
+            /** Format: date-time */
+            finishedAt: string | null;
+            view: {
+                /** @enum {number} */
+                schemaVersion: 1;
+                cross: string[][];
+                corners: {
+                    OROS?: number;
+                    COPAS?: number;
+                    ESPADAS?: number;
+                    BASTOS?: number;
+                };
+                stock: {
+                    count: number;
+                };
+                discard: string[];
+                hand: string | null;
+                round: number;
+                starsAvailable: number;
+                starsUsed: number;
+                moveCount: number;
+                /** @enum {string} */
+                status: "IN_PROGRESS" | "WON" | "LOST";
+                extra: (string | null)[];
+                stairwayUnlocked: boolean;
+                stairwayBuilding: {
+                    pile: number;
+                    count: number;
+                } | null;
+            };
+        };
+        Profile: {
+            /** Format: uuid */
+            id: string;
+            nickname: string;
+            avatar: string;
+            stars: number;
+            /** Format: date-time */
+            createdAt: string;
+            totalPlaySeconds: number;
+            achievements: string[];
+        };
         Card: {
             id: number;
             value: number | null;
