@@ -9,6 +9,7 @@ export default defineConfig({
       NODE_ENV: 'test',
       RATE_LIMIT_MAX: '3',
       AUTH_RATE_LIMIT_MAX: '3',
+      MATCH_RATE_LIMIT_MAX: '3',
       CORS_ORIGIN: 'https://baraja.pedrorincon.dev',
       JWT_SECRET: 'EjUMepKOHI9D8+aelhVIUdqgqB/EQtOCdHAPaBaHyNZC',
     },

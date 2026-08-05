@@ -175,6 +175,23 @@ registry.registerPath({
       description: 'Vista de la partida',
       content: { 'application/json': { schema: matchView } },
     },
+    401: errorResponse('Credenciales inválidas'),
+    404: errorResponse('Partida no encontrada'),
+  },
+});
+
+// Obtener partida activa (consolidar si caducó)
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/matches/active',
+  summary: 'Obtener la vista de una partida activa',
+  tags: ['Matches'],
+  security: [{ bearerAuth: [] }],
+  responses: {
+    200: {
+      description: 'Vista de la partida recuperada',
+      content: { 'application/json': { schema: matchView } },
+    },
     400: errorResponse('Parámetros inválidos'),
     401: errorResponse('Credenciales inválidas'),
     404: errorResponse('Partida no encontrada'),

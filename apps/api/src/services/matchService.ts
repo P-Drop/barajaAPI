@@ -159,6 +159,20 @@ export const matchService = {
     return toMatchView(match, state);
   },
 
+  getActiveMatch: async (
+    userId: string,
+    now: Date,
+  ): Promise<MatchView | null> => {
+    const active = await matchRepository.findActiveByUser(userId);
+    if (!active) return null;
+    const state = readState(active.state);
+    if (isStale(active, now)) {
+      await expire(active, state, userId); // caducó -> consolida
+      return null; // limpia -> ya no hay activa
+    }
+    return toMatchView(active, state);
+  },
+
   applyMoveToMatch: async (
     userId: string,
     matchId: string,

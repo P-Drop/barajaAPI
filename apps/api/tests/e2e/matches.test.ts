@@ -284,3 +284,37 @@ describe('POST /api/v1/matches/:id/moves', () => {
     expect(res.body.status).toBe('ABANDONED');
   });
 });
+
+describe('GET /api/v1/matches/active', () => {
+  it('sin token -> 401', async () => {
+    const res = await request(app).get('/api/v1/matches/active');
+    expect(res.status).toBe(401);
+  });
+
+  it('sin partida activa -> 404', async () => {
+    vi.mocked(matchRepository.findActiveByUser).mockResolvedValueOnce(null);
+    const res = await request(app).get('/api/v1/matches/active').set(auth);
+    expect(res.status).toBe(404);
+  });
+
+  it('con partida activa -> 200 con la vista', async () => {
+    const active = makeMatch();
+    vi.mocked(matchRepository.findActiveByUser).mockResolvedValueOnce(
+      active as never,
+    );
+    const res = await request(app).get('/api/v1/matches/active').set(auth);
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe(active.id);
+  });
+
+  it('partida activa caducada -> se consolida y 404', async () => {
+    const stale = makeMatch({ lastMoveAt: new Date(Date.now() - 20 * 60_000) });
+    vi.mocked(matchRepository.findActiveByUser).mockResolvedValueOnce(
+      stale as never,
+    );
+    vi.mocked(matchRepository.consolidateFinish).mockResolvedValueOnce(1);
+    const res = await request(app).get('/api/v1/matches/active').set(auth);
+    expect(res.status).toBe(404);
+    expect(matchRepository.consolidateFinish).toHaveBeenCalled(); // expire consolidó
+  });
+});

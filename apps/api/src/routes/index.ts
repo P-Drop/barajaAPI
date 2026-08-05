@@ -9,6 +9,7 @@ import rankingRoutes from './rankingRoutes.js';
 
 import { apiLimiter } from '../middlewares/rateLimiter.js';
 import { authLimiter } from '../middlewares/authLimiter.js';
+import { matchLimiter } from '../middlewares/matchLimiter.js';
 
 const router = Router();
 
@@ -25,7 +26,7 @@ router.use('/v1/auth', authLimiter, authRoutes);
 router.use('/v1/profile', apiLimiter, profileRoutes);
 
 // Partida solitario Orda
-router.use('/v1/matches', apiLimiter, matchRoutes);
+router.use('/v1/matches', matchLimiter, matchRoutes);
 
 // Ranking público
 router.use('/v1/ranking', apiLimiter, rankingRoutes);
