@@ -1,12 +1,16 @@
 import { z } from 'zod';
-import { SUITS } from '../games/orda/types.js';
 
 const cardSchema = z.string();
 
 const playerViewSchema = z.object({
   schemaVersion: z.literal(1),
   cross: z.array(z.array(cardSchema)),
-  corners: z.record(z.enum(SUITS), z.number()),
+  corners: z.object({
+    OROS: z.number(),
+    COPAS: z.number(),
+    ESPADAS: z.number(),
+    BASTOS: z.number(),
+  }),
   stock: z.object({ count: z.number() }),
   discard: z.array(cardSchema),
   hand: cardSchema.nullable(),

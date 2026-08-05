@@ -390,6 +390,60 @@ export interface paths {
                         "application/json": components["schemas"]["MatchView"];
                     };
                 };
+                /** @description Credenciales inválidas */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Partida no encontrada */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/matches/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtener la vista de una partida activa */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Vista de la partida recuperada */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MatchView"];
+                    };
+                };
                 /** @description Parámetros inválidos */
                 400: {
                     headers: {
@@ -789,10 +843,10 @@ export interface components {
                 schemaVersion: 1;
                 cross: string[][];
                 corners: {
-                    OROS?: number;
-                    COPAS?: number;
-                    ESPADAS?: number;
-                    BASTOS?: number;
+                    OROS: number;
+                    COPAS: number;
+                    ESPADAS: number;
+                    BASTOS: number;
                 };
                 stock: {
                     count: number;

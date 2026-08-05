@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { GamePage } from './pages/GamePage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       {/* Protegidas */}
       <Route element={<ProtectedRoute />}>
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/play" element={<GamePage />} />
       </Route>
 
       {/* Home (pública por ahora; el deck vive aquí) */}

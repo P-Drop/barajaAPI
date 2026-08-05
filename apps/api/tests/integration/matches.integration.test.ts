@@ -3,6 +3,7 @@ import { describe, it, expect, afterEach, afterAll } from 'vitest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/db/prisma.js';
 import { authRateLimitStore } from '../../src/middlewares/authLimiter.js';
+import { matchRateLimitStore } from '../../src/middlewares/matchLimiter.js';
 
 const PASSWORD = 'longTestPassword';
 const NICKS = ['OrdaTestPlayer1', 'OrdaTestPlayer2'];
@@ -152,5 +153,34 @@ describe('Integración: Partidas Solitario Orda (BD Real)', () => {
         },
       }),
     ).rejects.toThrow();
+  });
+
+  it('GET /active reanuda la partida en curso y da 404 tras terminarla', async () => {
+    await register(NICKS[0]);
+    const { token } = await login(NICKS[0]);
+
+    const created = await request(app)
+      .post('/api/v1/matches')
+      .set(authHeader(token));
+    const active = await request(app)
+      .get('/api/v1/matches/active')
+      .set(authHeader(token));
+    expect(active.status).toBe(200);
+    expect(active.body.id).toBe(created.body.id); // misma partida
+
+    await request(app)
+      .post(`/api/v1/matches/${created.body.id}/moves`)
+      .set(authHeader(token))
+      .send({
+        expectedVersion: created.body.version,
+        move: { type: 'ABANDON' },
+      });
+
+    matchRateLimitStore.resetAll();
+
+    const afterEnd = await request(app)
+      .get('/api/v1/matches/active')
+      .set(authHeader(token));
+    expect(afterEnd.status).toBe(404); // ya no hay activa
   });
 });

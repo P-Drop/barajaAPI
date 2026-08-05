@@ -14,6 +14,11 @@ export const matchController = {
     return res.status(200).json(match);
   },
 
+  active: async (req: Request, res: Response) => {
+    const match = await matchService.getActiveMatch(req.user!.id, new Date());
+    return match ? res.json(match) : res.sendStatus(404);
+  },
+
   move: async (req: Request, res: Response) => {
     const { id, expectedVersion, move } = matchValidator.move(req);
     const match = await matchService.applyMoveToMatch(
