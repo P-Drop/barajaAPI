@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function formatDuration(total: number): string {
   const m = Math.floor(total / 60);
   const s = total % 60;
@@ -8,11 +10,13 @@ export function EndScreen({
   status,
   stars,
   durationSeconds,
+  jokersUsed,
   onRestart,
 }: {
   status: 'WON' | 'LOST' | 'ABANDONED';
   stars: number;
   durationSeconds: number;
+  jokersUsed: number;
   onRestart: () => void;
 }) {
   const won = status === 'WON';
@@ -34,6 +38,7 @@ export function EndScreen({
         </p>
       )}
       <p className="text-lg">Tiempo: {formatDuration(durationSeconds)}</p>
+      <p className="text-lg">Comodines usados: {jokersUsed}</p>
       <button
         type="button"
         onClick={onRestart}
@@ -41,6 +46,11 @@ export function EndScreen({
       >
         Jugar otra vez
       </button>
+      <p>
+        <Link to="/profile" className="underline">
+          Salir
+        </Link>
+      </p>
     </div>
   );
 }

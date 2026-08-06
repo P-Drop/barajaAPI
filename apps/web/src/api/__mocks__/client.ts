@@ -18,3 +18,4 @@ export const createMatch = vi.fn();
 export const getMatch = vi.fn();
 export const getActiveMatch = vi.fn();
 export const applyMove = vi.fn();
+export const getRanking = vi.fn();

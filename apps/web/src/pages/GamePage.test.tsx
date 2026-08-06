@@ -240,3 +240,162 @@ describe('GamePage · orquestación', () => {
     expect(screen.getByText('50')).toBeInTheDocument(); // tablero nuevo
   });
 });
+
+describe('GamePage · bonus', () => {
+  it('espacio extra envía USE_STAR_EXTRA_SLOT', async () => {
+    vi.mocked(api.getActiveMatch).mockResolvedValue(
+      makeMatchView({ view: { starsAvailable: 1 } }),
+    );
+    vi.mocked(api.applyMove).mockResolvedValue(makeMatchView());
+
+    const user = userEvent.setup();
+    renderWithProviders(<GamePage />, { route: '/play' });
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Espacio extra' }),
+    );
+
+    expect(api.applyMove).toHaveBeenCalledWith('tok', 'm1', {
+      expectedVersion: 0,
+      move: { type: 'USE_STAR_EXTRA_SLOT' },
+    });
+  });
+
+  it('recuperar del descarte envía USE_STAR_RECOVER con la carta elegida', async () => {
+    vi.mocked(api.getActiveMatch).mockResolvedValue(
+      makeMatchView({
+        view: { starsAvailable: 1, discard: ['OROS-7', 'COPAS-2'] },
+      }),
+    );
+    vi.mocked(api.applyMove).mockResolvedValue(makeMatchView());
+
+    const user = userEvent.setup();
+    renderWithProviders(<GamePage />, { route: '/play' });
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Recuperar del descarte' }),
+    );
+    await user.click(screen.getByRole('img', { name: '7 de oros' })); // carta del fondo
+
+    expect(api.applyMove).toHaveBeenCalledWith('tok', 'm1', {
+      expectedVersion: 0,
+      move: { type: 'USE_STAR_RECOVER', cardId: 'OROS-7' },
+    });
+  });
+
+  it('recuperar: "Cerrar" cierra el overlay sin enviar nada', async () => {
+    vi.mocked(api.getActiveMatch).mockResolvedValue(
+      makeMatchView({
+        view: { starsAvailable: 1, discard: ['OROS-7', 'COPAS-2'] },
+      }),
+    );
+
+    const user = userEvent.setup();
+    renderWithProviders(<GamePage />, { route: '/play' });
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Recuperar del descarte' }),
+    );
+    expect(screen.getByRole('img', { name: '7 de oros' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Cerrar' }));
+    expect(screen.queryByRole('img', { name: '7 de oros' })).toBeNull();
+    expect(api.applyMove).not.toHaveBeenCalled();
+  });
+
+  it('movimiento en bloque: carta interior + cruz destino envía MOVE_STACK', async () => {
+    vi.mocked(api.getActiveMatch).mockResolvedValue(
+      makeMatchView({
+        view: {
+          stairwayUnlocked: true,
+          cross: [['OROS-4', 'COPAS-3'], ['ESPADAS-5'], [], [], []],
+        },
+      }),
+    );
+    vi.mocked(api.applyMove).mockResolvedValue(makeMatchView());
+
+    const user = userEvent.setup();
+    renderWithProviders(<GamePage />, { route: '/play' });
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Ver 2 cartas' }),
+    );
+    await user.click(screen.getByRole('img', { name: '4 de oros' })); // interior de la cruz 0
+    await user.click(screen.getByRole('img', { name: '5 de espadas' })); // cruz 1 destino
+
+    expect(api.applyMove).toHaveBeenCalledWith('tok', 'm1', {
+      expectedVersion: 0,
+      move: { type: 'MOVE_STACK', fromPile: 0, cardIndex: 0, toPile: 1 },
+    });
+  });
+
+  it('desbloquear la escalera muestra el toast del logro', async () => {
+    vi.mocked(api.getActiveMatch).mockResolvedValue(
+      makeMatchView({
+        view: {
+          hand: 'OROS-8',
+          stairwayUnlocked: false,
+          cross: [
+            ['COPAS-12', 'ESPADAS-11', 'OROS-10', 'BASTOS-9'],
+            [],
+            [],
+            [],
+            [],
+          ],
+        },
+      }),
+    );
+    vi.mocked(api.applyMove).mockResolvedValue(
+      makeMatchView({ view: { stairwayUnlocked: true } }),
+    );
+
+    const user = userEvent.setup();
+    renderWithProviders(<GamePage />, { route: '/play' });
+
+    await user.click(await screen.findByRole('img', { name: '9 de bastos' }));
+
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'Escalera mecánica',
+    );
+  });
+
+  it.each([
+    [409, 'La partida cambió, actualiza la página'],
+    [404, 'Partida no encontrada'],
+  ])('un error %i muestra el mensaje mapeado', async (status, message) => {
+    vi.mocked(api.getActiveMatch).mockResolvedValue(
+      makeMatchView({
+        view: {
+          hand: 'OROS-9',
+          corners: { OROS: 8, COPAS: 0, ESPADAS: 0, BASTOS: 0 },
+        },
+      }),
+    );
+    vi.mocked(api.applyMove).mockRejectedValue(new api.ApiError(status));
+
+    const user = userEvent.setup();
+    renderWithProviders(<GamePage />, { route: '/play' });
+
+    await user.click(await screen.findByRole('img', { name: '8 de oros' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(message);
+  });
+
+  it('un error no-API muestra el mensaje genérico', async () => {
+    vi.mocked(api.getActiveMatch).mockResolvedValue(
+      makeMatchView({
+        view: {
+          hand: 'OROS-9',
+          corners: { OROS: 8, COPAS: 0, ESPADAS: 0, BASTOS: 0 },
+        },
+      }),
+    );
+    vi.mocked(api.applyMove).mockRejectedValue(new Error('boom')); // no es ApiError
+
+    const user = userEvent.setup();
+    renderWithProviders(<GamePage />, { route: '/play' });
+
+    await user.click(await screen.findByRole('img', { name: '8 de oros' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'No se pudo aplicar el movimiento',
+    );
+  });
+});

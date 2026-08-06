@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Deck } from '../components/Deck';
 
 export default function HomePage() {
@@ -12,6 +13,11 @@ export default function HomePage() {
         <main>
           <Deck />
         </main>
+        <p>
+          <Link to="/ranking" className="underline">
+            Ver ranking
+          </Link>
+        </p>
         <footer className="mt-8 text-center text-sm text-pretty text-green-200 sm:text-right">
           <p>
             Cartas:{' '}

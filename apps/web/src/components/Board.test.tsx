@@ -89,4 +89,19 @@ describe('Board interacciones', () => {
     // cross[0] = ['OROS-5'] (1 carta) -> sin pastilla
     expect(screen.queryByRole('button', { name: 'Ver 1 cartas' })).toBeNull();
   });
+
+  it.each([
+    { zone: 'corner', suit: 'OROS' } as const,
+    { zone: 'extra', index: 0 } as const,
+    { zone: 'discard' } as const,
+  ])('resalta la celda seleccionada %o', (selected) => {
+    render(
+      <Board
+        view={{ ...sampleView, extra: ['OROS-8', null] }}
+        onSelect={() => {}}
+        selected={selected}
+      />,
+    );
+    expect(screen.getByRole('img', { name: '8 de oros' })).toBeInTheDocument();
+  });
 });
