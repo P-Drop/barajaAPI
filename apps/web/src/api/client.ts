@@ -25,6 +25,9 @@ export type MoveRequestBody =
 export type Move = MoveRequestBody['move'];
 export type Position = Extract<Move, { type: 'PLACE' }>['to'];
 
+export type Ranking =
+  paths['/api/v1/ranking']['get']['responses'][200]['content']['application/json'];
+
 // Error con el status HTTP
 export class ApiError extends Error {
   status: number;
@@ -115,4 +118,9 @@ export function applyMove(
   body: MoveRequestBody,
 ): Promise<MatchView> {
   return apiFetch(`/api/v1/matches/${id}/moves`, authed(token, jsonPost(body)));
+}
+
+// Ranking (público)
+export function getRanking(limit: number, offset: number): Promise<Ranking> {
+  return apiFetch(`/api/v1/ranking?limit=${limit}&offset=${offset}`);
 }

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { AchievementBadge } from '../components/AchievementBadge';
 
@@ -45,6 +45,18 @@ export function ProfilePage() {
           ))}
         </ul>
       )}
+
+      <p>
+        <Link to="/ranking" className="underline">
+          Ver ranking
+        </Link>
+      </p>
+
+      <p>
+        <Link to="/play" className="bg-green-800 text-lg">
+          Jugar
+        </Link>
+      </p>
 
       <button onClick={onLogout}>Cerrar sesión</button>
     </section>
