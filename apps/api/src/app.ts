@@ -10,6 +10,7 @@ import { openApiDocument } from './docs/openapi.js';
 import { httpLogger } from './config/httpLogger.js';
 
 import { metricsMiddleware } from './middlewares/metricsMiddleware.js';
+import './metrics/activeMatchesGauge.js';
 import { register } from './config/metrics.js';
 
 import routes from './routes/index.js';

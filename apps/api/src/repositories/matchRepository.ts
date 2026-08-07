@@ -106,4 +106,12 @@ export const matchRepository = {
 
   findActiveByUser: (userId: string) =>
     prisma.match.findFirst({ where: { userId, status: 'IN_PROGRESS' } }),
+
+  countActive: (since: Date) =>
+    prisma.match.count({
+      where: {
+        status: 'IN_PROGRESS',
+        lastMoveAt: { gt: since },
+      },
+    }),
 };

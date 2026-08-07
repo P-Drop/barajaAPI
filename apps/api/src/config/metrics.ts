@@ -17,3 +17,32 @@ export const deckOperations = new client.Counter({
   labelNames: ['operation'],
   registers: [register],
 });
+
+// Usuarios
+export const authRegistrations = new client.Counter({
+  name: 'auth_registrations_total',
+  help: 'Usuarios registrados',
+  registers: [register],
+});
+
+// Métricas Orda
+export const ordaMatchesStarted = new client.Counter({
+  name: 'orda_matches_started_total',
+  help: 'Partidas iniciadas',
+  registers: [register],
+});
+
+export const ordaMatchesFinished = new client.Counter({
+  name: 'orda_matches_finished_total',
+  help: 'Partidas finalizadas',
+  labelNames: ['outcome'],
+  registers: [register],
+});
+
+export const ordaMatchDurationSeconds = new client.Histogram({
+  name: 'orda_match_duration_seconds',
+  help: 'Duración de las partidas terminadas',
+  buckets: [60, 120, 300, 600, 900, 1200, 1800, 3600],
+  labelNames: ['outcome'],
+  registers: [register],
+});

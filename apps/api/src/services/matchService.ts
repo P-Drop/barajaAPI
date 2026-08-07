@@ -11,6 +11,11 @@ import { applyMove } from '../games/orda/applyMove.js';
 import { ConflictError } from '../errors/ConflictError.js';
 import { DomainError } from '../errors/DomainError.js';
 import { computeStars } from '../games/orda/scoring.js';
+import {
+  ordaMatchDurationSeconds,
+  ordaMatchesFinished,
+  ordaMatchesStarted,
+} from '../config/metrics.js';
 
 export type MatchView = {
   id: string;
@@ -109,6 +114,9 @@ const expire = async (
     return toMatchView(fresh!, readState(fresh!.state));
   }
 
+  ordaMatchesFinished.inc({ outcome: 'expired' });
+  ordaMatchDurationSeconds.observe({ outcome: 'expired' }, playSeconds);
+
   return toMatchView(
     {
       id: match.id,
@@ -140,6 +148,8 @@ export const matchService = {
 
     const state = createGame(Math.random, toAchievements(user.achievements));
     const match = await matchRepository.create(userId, state);
+
+    ordaMatchesStarted.inc();
 
     return toMatchView(match, state);
   },
@@ -209,6 +219,7 @@ export const matchService = {
     const elapsedSeconds = Math.floor(
       (now.getTime() - match.startedAt.getTime()) / 1000,
     );
+
     const stars = finished
       ? computeStars(status === 'WON', next.starsUsed, elapsedSeconds)
       : 0;
@@ -238,6 +249,12 @@ export const matchService = {
           unlockStairway: next.stairwayUnlocked,
         },
       );
+
+      if (count !== 0) {
+        const outcome = data.status.toLowerCase();
+        ordaMatchesFinished.inc({ outcome });
+        ordaMatchDurationSeconds.observe({ outcome }, elapsedSeconds);
+      }
     } else {
       count = await matchRepository.updateWithVersion(
         matchId,

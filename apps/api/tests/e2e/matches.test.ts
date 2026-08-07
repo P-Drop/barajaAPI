@@ -7,6 +7,11 @@ import { matchRepository } from '../../src/repositories/matchRepository.js';
 import { userRepository } from '../../src/repositories/userRepository.js';
 import { createGame } from '../../src/games/orda/deck.js';
 import { baseState } from '../unit/orda/helpers.js';
+import {
+  ordaMatchDurationSeconds,
+  ordaMatchesFinished,
+  ordaMatchesStarted,
+} from '../../src/config/metrics.js';
 
 // Repositorios mocked
 vi.mock('../../src/repositories/matchRepository.js', () => ({
@@ -16,6 +21,7 @@ vi.mock('../../src/repositories/matchRepository.js', () => ({
     updateWithVersion: vi.fn(),
     consolidateFinish: vi.fn(),
     findActiveByUser: vi.fn(),
+    countActive: vi.fn(),
   },
 }));
 
@@ -52,6 +58,34 @@ const makeMatch = (over = {}) => ({
 });
 
 afterEach(() => vi.clearAllMocks());
+
+// Lectura de métricas.
+type MetricReader = {
+  get: () => Promise<{
+    values: {
+      value: number;
+      labels: Record<string, unknown>;
+      metricName?: string;
+    }[];
+  }>;
+};
+
+const readSeries = async (
+  metric: MetricReader,
+  filter: { outcome?: string; metricName?: string } = {},
+) => {
+  const { values } = await metric.get();
+  return (
+    values.find(
+      (v) =>
+        (filter.outcome === undefined || v.labels.outcome === filter.outcome) &&
+        (filter.metricName === undefined || v.metricName === filter.metricName),
+    )?.value ?? 0
+  );
+};
+
+// El histograma expone _sum, _count y los _bucket en la misma lista de series
+const DURATION_COUNT = 'orda_match_duration_seconds_count';
 
 describe('POST /api/v1/matches', () => {
   it('Auth obligatorio: sin token -> 401', async () => {
@@ -316,5 +350,116 @@ describe('GET /api/v1/matches/active', () => {
     const res = await request(app).get('/api/v1/matches/active').set(auth);
     expect(res.status).toBe(404);
     expect(matchRepository.consolidateFinish).toHaveBeenCalled(); // expire consolidó
+  });
+});
+
+describe('Métricas de partidas', () => {
+  it('Crear partida -> orda_matches_started_total sube en 1', async () => {
+    vi.mocked(userRepository.findById).mockResolvedValueOnce(fakeUser as never);
+    vi.mocked(matchRepository.findActiveByUser).mockResolvedValueOnce(null);
+    vi.mocked(matchRepository.create).mockResolvedValueOnce(
+      makeMatch() as never,
+    );
+
+    const before = await readSeries(ordaMatchesStarted);
+
+    const res = await request(app).post('/api/v1/matches').set(auth);
+
+    expect(res.status).toBe(201);
+    expect(await readSeries(ordaMatchesStarted)).toBe(before + 1);
+  });
+
+  it('Partida ganada -> cuenta outcome "won" y observa la duración', async () => {
+    const match = makeMatch({
+      state: baseState({
+        corners: { OROS: 11, COPAS: 12, BASTOS: 12, ESPADAS: 12 },
+        hand: 'OROS-12',
+      }),
+      version: 100,
+    });
+    vi.mocked(matchRepository.findByIdForUser).mockResolvedValueOnce(
+      match as never,
+    );
+    vi.mocked(matchRepository.consolidateFinish).mockResolvedValueOnce(1);
+
+    const beforeWon = await readSeries(ordaMatchesFinished, {
+      outcome: 'won',
+    });
+    const beforeDuration = await readSeries(ordaMatchDurationSeconds, {
+      outcome: 'won',
+      metricName: DURATION_COUNT,
+    });
+
+    const res = await request(app)
+      .post(`/api/v1/matches/${match.id}/moves`)
+      .set(auth)
+      .send({
+        expectedVersion: 100,
+        move: {
+          type: 'PLACE',
+          from: { zone: 'hand' },
+          to: { zone: 'corner', suit: 'OROS' },
+        },
+      });
+
+    expect(res.status).toBe(200);
+    expect(await readSeries(ordaMatchesFinished, { outcome: 'won' })).toBe(
+      beforeWon + 1,
+    );
+    expect(
+      await readSeries(ordaMatchDurationSeconds, {
+        outcome: 'won',
+        metricName: DURATION_COUNT,
+      }),
+    ).toBe(beforeDuration + 1);
+  });
+
+  it('Conflicto optimista al cerrar (consolidateFinish -> 0): 409 y NO cuenta la partida', async () => {
+    const match = makeMatch();
+    vi.mocked(matchRepository.findByIdForUser).mockResolvedValueOnce(
+      match as never,
+    );
+    vi.mocked(matchRepository.consolidateFinish).mockResolvedValueOnce(0);
+
+    const before = await readSeries(ordaMatchesFinished, {
+      outcome: 'abandoned',
+    });
+
+    const res = await request(app)
+      .post(`/api/v1/matches/${match.id}/moves`)
+      .set(auth)
+      .send({ expectedVersion: 0, move: { type: 'ABANDON' } });
+
+    expect(res.status).toBe(409);
+    expect(
+      await readSeries(ordaMatchesFinished, { outcome: 'abandoned' }),
+    ).toBe(before);
+  });
+
+  it('Caducidad por TTL -> outcome "expired", distinto del abandono explícito', async () => {
+    const stale = makeMatch({ lastMoveAt: new Date(Date.now() - 20 * 60_000) });
+    vi.mocked(matchRepository.findByIdForUser).mockResolvedValueOnce(
+      stale as never,
+    );
+    vi.mocked(matchRepository.consolidateFinish).mockResolvedValueOnce(1);
+
+    const beforeExpired = await readSeries(ordaMatchesFinished, {
+      outcome: 'expired',
+    });
+    const beforeAbandoned = await readSeries(ordaMatchesFinished, {
+      outcome: 'abandoned',
+    });
+
+    const res = await request(app).get(`/api/v1/matches/${stale.id}`).set(auth);
+
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('ABANDONED'); // en BD ambos casos son ABANDONED
+    expect(await readSeries(ordaMatchesFinished, { outcome: 'expired' })).toBe(
+      beforeExpired + 1,
+    );
+    // La métrica es el ÚNICO sitio donde se distingue caducidad de abandono
+    expect(
+      await readSeries(ordaMatchesFinished, { outcome: 'abandoned' }),
+    ).toBe(beforeAbandoned);
   });
 });
