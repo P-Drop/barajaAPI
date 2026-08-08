@@ -8,10 +8,12 @@ export const metricsMiddleware = (
 ) => {
   const end = httpRequestDuration.startTimer();
   res.on('finish', () => {
-    // Plantilla de la ruta (cardinalidad)
+    // req.baseUrl NO es fiable aquí (Express lo restaura al propagar errores):
+    // se usa el prefijo congelado por tagRoutePrefix. req.route sí sobrevive.
+    const prefix = req.routePrefix ?? '';
     const path = req.route?.path
-      ? `${req.baseUrl}${req.route.path}`
-      : 'unmatched';
+      ? `${prefix}${req.route.path}`
+      : prefix || 'unmatched';
     // Canónica: sin barra final (salvo la raíz)
     const route =
       path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;

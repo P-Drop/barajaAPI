@@ -42,6 +42,36 @@ describe('GET /metrics', () => {
     const res = await request(app).get('/metrics');
     expect(res.text).toMatch(/deck_operations_total\{operation="get"\} [1-9]/);
   });
+
+  it('corte previo a la ruta (401): etiqueta el prefijo montado, no "unmatched"', async () => {
+    await request(app).get('/api/v1/matches/active'); // sin token -> 401
+
+    const res = await request(app).get('/metrics');
+
+    expect(res.text).toMatch(
+      /http_request_duration_seconds_count\{[^}]*route="\/api\/v1\/matches"[^}]*status_code="401"[^}]*\}/,
+    );
+  });
+
+  it('ruta inexistente: sigue siendo "unmatched"', async () => {
+    await request(app).get('/no-existe'); // fuera de todo router montado
+
+    const res = await request(app).get('/metrics');
+
+    expect(res.text).toMatch(
+      /http_request_duration_seconds_count\{[^}]*route="unmatched"[^}]*status_code="404"[^}]*\}/,
+    );
+  });
+
+  it('error propagado en ruta resuelta: conserva el prefijo, no queda "/draw"', async () => {
+    await request(app).get('/api/v1/deck/draw?count=abc'); // 400 de Zod, lanzado
+
+    const res = await request(app).get('/metrics');
+
+    expect(res.text).toMatch(
+      /http_request_duration_seconds_count\{[^}]*route="\/api\/v1\/deck\/draw"[^}]*status_code="400"[^}]*\}/,
+    );
+  });
 });
 
 describe('GET /metrics (Solitario Orda)', () => {
