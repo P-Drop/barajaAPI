@@ -12,7 +12,14 @@ vi.mock('../../src/repositories/cardRepository.js', () => ({
   },
 }));
 
+vi.mock('../../src/repositories/matchRepository.js', () => ({
+  matchRepository: {
+    countActive: vi.fn(),
+  },
+}));
+
 import app from '../../src/app.js';
+import { matchRepository } from '../../src/repositories/matchRepository.js';
 
 describe('GET /metrics', () => {
   it('expone métricas en formato Prometheus (default de Node incluidas)', async () => {
@@ -34,5 +41,56 @@ describe('GET /metrics', () => {
     await request(app).get('/api/v1/deck');
     const res = await request(app).get('/metrics');
     expect(res.text).toMatch(/deck_operations_total\{operation="get"\} [1-9]/);
+  });
+
+  it('corte previo a la ruta (401): etiqueta el prefijo montado, no "unmatched"', async () => {
+    await request(app).get('/api/v1/matches/active'); // sin token -> 401
+
+    const res = await request(app).get('/metrics');
+
+    expect(res.text).toMatch(
+      /http_request_duration_seconds_count\{[^}]*route="\/api\/v1\/matches"[^}]*status_code="401"[^}]*\}/,
+    );
+  });
+
+  it('ruta inexistente: sigue siendo "unmatched"', async () => {
+    await request(app).get('/no-existe'); // fuera de todo router montado
+
+    const res = await request(app).get('/metrics');
+
+    expect(res.text).toMatch(
+      /http_request_duration_seconds_count\{[^}]*route="unmatched"[^}]*status_code="404"[^}]*\}/,
+    );
+  });
+
+  it('error propagado en ruta resuelta: conserva el prefijo, no queda "/draw"', async () => {
+    await request(app).get('/api/v1/deck/draw?count=abc'); // 400 de Zod, lanzado
+
+    const res = await request(app).get('/metrics');
+
+    expect(res.text).toMatch(
+      /http_request_duration_seconds_count\{[^}]*route="\/api\/v1\/deck\/draw"[^}]*status_code="400"[^}]*\}/,
+    );
+  });
+});
+
+describe('GET /metrics (Solitario Orda)', () => {
+  it('el gauge refleja la BD', async () => {
+    vi.mocked(matchRepository.countActive).mockResolvedValue(3);
+
+    const res = await request(app).get('/metrics');
+
+    expect(res.text).toMatch(/^orda_matches_active 3$/m);
+  });
+
+  it('endpoint /metrics sobrevive a la BD caída', async () => {
+    vi.mocked(matchRepository.countActive).mockRejectedValue(
+      new Error('db down'),
+    );
+
+    const res = await request(app).get('/metrics');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/process_cpu_user_seconds_total/);
   });
 });

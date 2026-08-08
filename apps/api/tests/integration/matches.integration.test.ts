@@ -2,8 +2,7 @@ import request from 'supertest';
 import { describe, it, expect, afterEach, afterAll } from 'vitest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/db/prisma.js';
-import { authRateLimitStore } from '../../src/middlewares/authLimiter.js';
-import { matchRateLimitStore } from '../../src/middlewares/matchLimiter.js';
+import { resetRateLimits } from '../helpers/rateLimits.js';
 
 const PASSWORD = 'longTestPassword';
 const NICKS = ['OrdaTestPlayer1', 'OrdaTestPlayer2'];
@@ -75,7 +74,7 @@ describe('Integración: Partidas Solitario Orda (BD Real)', () => {
   it('la partida de Player1 es invisible para Player2 -> 404', async () => {
     await register(NICKS[0]);
     await register(NICKS[1]);
-    authRateLimitStore.resetAll();
+    resetRateLimits();
     const player1 = await login(NICKS[0]);
     const player2 = await login(NICKS[1]);
 
@@ -176,7 +175,7 @@ describe('Integración: Partidas Solitario Orda (BD Real)', () => {
         move: { type: 'ABANDON' },
       });
 
-    matchRateLimitStore.resetAll();
+    resetRateLimits();
 
     const afterEnd = await request(app)
       .get('/api/v1/matches/active')

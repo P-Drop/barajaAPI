@@ -6,18 +6,23 @@ import { userRepository } from '../repositories/userRepository.js';
 import type { RegisterInput } from '../schemas/registerSchema.js';
 import type { LoginInput } from '../schemas/loginSchema.js';
 import { UnauthorizedError } from '../errors/UnauthorizedError.js';
+import { authRegistrations } from '../config/metrics.js';
 
 const DUMMY_HASH = await argon2.hash(crypto.randomUUID());
 
 export const authService = {
   register: async (input: RegisterInput) => {
     const passwordHash = await argon2.hash(input.password);
-    return userRepository.createUser({
+    const newUser = await userRepository.createUser({
       nickname: input.nickname,
       nicknameNormalized: input.nickname.toLowerCase(),
       passwordHash,
       avatar: input.avatar,
     });
+
+    authRegistrations.inc();
+
+    return newUser;
   },
 
   login: async (input: LoginInput) => {
