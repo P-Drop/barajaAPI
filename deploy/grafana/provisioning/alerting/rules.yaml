@@ -53,10 +53,11 @@ groups:
         execErrState: Error
         for: 1m
         annotations:
-          summary: LA API no responde al scarpe de Prometheus
+          summary: LA API no responde al scrape de Prometheus
         isPaused: false
         notification_settings:
           receiver: discord-baraja
+
       - uid: ffrrkiucloagwd
         title: Error rate 5xx
         condition: C
@@ -106,6 +107,59 @@ groups:
         for: 5m
         annotations:
           summary: Error interno de servidor o base de datos
+        isPaused: false
+        notification_settings:
+          receiver: discord-baraja
+
+      - uid: baraja-429-rate-limit
+        title: Rate limit disparado
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: prometheus
+            model:
+              editorMode: code
+              expr: sum by (route) (increase(http_request_duration_seconds_count{status_code="429"}[10m]))
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            queryType: expression
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 2
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 2m
+        annotations:
+          summary: Rate limit rechazando peticiones en {{ $labels.route }} — comprobar si es abuso o si el límite estrangula a jugadores reales
         isPaused: false
         notification_settings:
           receiver: discord-baraja

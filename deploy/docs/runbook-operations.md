@@ -96,7 +96,7 @@ ssh -L 9090:localhost:9090 <usuario>@<VPS>   # luego abrir http://localhost:9090
 ```bash
 curl -s localhost:9090/-/healthy                                   # Prometheus vivo
 curl -s localhost:9090/api/v1/targets | grep -o '"health":"[^"]*"' # scrape "up"
-curl -s localhost:3000/metrics | grep deck_operations              # la API expone métricas
+curl -s localhost:3000/metrics | grep -E 'deck_operations|orda_'   # la API expone métricas (baraja + juego)
 curl -s -o /dev/null -w '%{http_code}\n' localhost:3001/login      # Grafana responde (200)
 ```
 
@@ -129,7 +129,82 @@ docker exec baraja-grafana grafana cli admin reset-admin-password '<nuevo-passwo
 
 - Los paneles referencian el datasource por `uid: prometheus` (fijado en `datasources/prometheus.yml`): si ese uid cambia, todos los paneles caen con "datasource not found".
 
-- **Alertas y contact points**: provisionados como código en `provisioning/alerting/` (solo lectura en la UI); el secreto del webhook se interpola vía `$DISCORD_WEBHOOK_URL` desde `.env.grafana`.viven en el volumen `grafana-data`; la fuente de verdad es el repo.
+- **Alertas y contact points**: provisionados como código en `provisioning/alerting/` (solo lectura en la UI); el secreto del webhook se interpola vía `$DISCORD_WEBHOOK_URL` desde `.env.grafana`. La fuente de verdad es el repo, no el volumen `grafana-data`.
+
+### Métricas del juego (Solitario Orda)
+
+| Métrica                                | Tipo      | Cómo leerla                                             |
+| -------------------------------------- | --------- | ------------------------------------------------------- |
+| `orda_matches_started_total`           | counter   | partidas creadas                                        |
+| `orda_matches_finished_total{outcome}` | counter   | `won` · `abandoned` (botón Abandonar) · `expired` (TTL) |
+| `orda_match_duration_seconds{outcome}` | histogram | duración: p50/p90 con `histogram_quantile`              |
+| `orda_matches_active`                  | gauge     | partidas vivas **ahora**                                |
+| `auth_registrations_total`             | counter   | atlas de jugador                                        |
+
+Tres cosas que no son evidentes:
+
+**1. El gauge se calcula al preguntar, no al ocurrir.** `orda_matches_active` no se incrementa desde el código: en cada scrape (30 s) ejecuta un `COUNT` sobre `Match` filtrando `status='IN_PROGRESS' AND lastMoveAt > now - MATCH_TTL_MINUTES`. Por eso sobrevive a los despliegues, que reinician el proceso. Si la BD falla, el `catch` conserva el último valor y `/metrics` sigue devolviendo 200 - **deliberado**: un error al leer Postgres provocaría fallo en `register.metrics()`, Prometheus vería un `up=0` dando falso positivo en la alerta "API caída".
+
+**2. Hay partidas que nunca aparecen en las métricas de desenlace.** La expliración es perezosa: una partida caducada sólo se consolida cuando alguien vuelve a tocarla. Si el jugador cierra la pestaña y no regresa, se queda `IN _PROGRESS` en la BD indefinidamente y no genera `finished`. Consecuencia: **`expired` subestima el abandono real**. Las colgadas se estiman con `started - finished - active` (medición del 2026-08-08: 10 iniciadas, 8 terminadas, 1 activa -> 1 colagada):
+
+```bash
+curl -sG localhost:9090/api/v1/query --data-urlencode \
+  'query=orda_matches_started_total - sum(orda_matches_finished_total) - orda_matches_active'
+```
+
+> ⚠️ Al consultar Prometheus por `curl`, las expresiones con espacios, llaves o comillas
+> necesitan `-G --data-urlencode 'query=…'`. Pegadas crudas en la URL devuelven respuesta
+> vacía, sin error que lo explique.
+
+### Alerta "Rate limit disparado"
+
+`sum by (route) (increase(http_request_duration_seconds_count{status_code="429"}[10m])) > 2`
+sostenido `for: 2m`.
+
+- **Umbral bajo a propósito**: en operación normal la línea base es 0 rechazos. Tres 429
+  sostenidos ya son señal de abuso o de un límite que estrangula a jugadores legítimos.
+- **`noDataState: OK`**, igual que la alerta de 5xx: sin 429 la serie no existe, y con
+  `Alerting` llegaría un aviso permanente estando todo bien. La de "API caída" sí usa
+  `Alerting`, porque allí la ausencia de datos **es** el fallo.
+- **Para probarla hay que gotear, no lanzar una ráfaga.** Con scrape de 30 s, 25 peticiones
+  en dos segundos estrenan la serie valiendo 25 de golpe y `increase()` mide **0**: la
+  primera muestra de una serie es la línea base, no un incremento. Verificado: en ráfaga
+  el pico fue 4; espaciando 10 s, 30.
+
+```bash
+for i in $(seq 1 40); do
+  curl -s -o /dev/null -X POST https://api.pedrorincon.dev/api/v1/auth/login \
+    -H 'Content-Type: application/json' -d '{"nickname":"x","password":"y"}'
+  sleep 10
+done
+```
+
+Tiempo medido de extremo a extremo (2026-08-08): bucle a las 23:29 → _Firing_ y aviso en
+Discord a las 23:34. Bloquea `/api/v1/auth` para esa IP durante 15 min; el juego y el
+ranking siguen operativos.
+
+Para descartar el webhook sin esperar a la alerta:
+
+```bash
+source ~/baraja/.env.grafana
+curl -s -o /dev/null -w '%{http_code}\n' -X POST "$DISCORD_WEBHOOK_URL" \
+  -H 'Content-Type: application/json' -d '{"content":"prueba"}'   # 204 = OK
+```
+
+### Rate limiting de partidas (dos capas)
+
+| Variable                     | Default | Capa                                                |
+| ---------------------------- | ------- | --------------------------------------------------- |
+| `MATCH_RATE_LIMIT_WINDOW_MS` | 60000   | ventana común a ambas                               |
+| `MATCH_IP_RATE_LIMIT_MAX`    | 300     | por **IP**, antes de `requireAuth` (escudo anónimo) |
+| `MATCH_RATE_LIMIT_MAX`       | 120     | por **jugador**, tras `requireAuth`                 |
+
+La capa por jugador evita que varios usuarios tras el mismo NAT compartan castigo.
+Dimensionado con el ritmo real medido: p50 23,5 movimientos/min, p90 29, máx 42.
+Cambios ⇒ editar `~/baraja/.env.production` + `docker compose up -d --force-recreate api`
+(un `restart` no relee el env).
+
+**3. Los counters se reinician en cada despliegue** (contenedor nuevo). Leerlos siempre con `increase()` o `rate()`, que manejan el reset; nunca el valor absoluto.
 
 ## 3. Gestión de logs
 
@@ -212,3 +287,27 @@ docker logs --tail 30 baraja-prometheus
 ```
 
 Si falla: ¿está `baraja-api` en el mismo compose/red? ¿cambió el nombre del servicio?
+
+### G) "Ha saltado la alerta de rate limit"
+
+1. Identificar la ruta en el mensaje de Discord o en el panel _429 por ruta_.
+2. `/api/v1/auth` ⇒ casi siempre fuerza bruta contra el login. Ver el origen con
+   `docker logs baraja-api --since 1h | grep '"url":"/api/v1/auth/login"'`.
+   El límite (10 por 15 min) **no se afloja**; si el origen es hostil, ver
+   [runbook-blue-team.md](./runbook-blue-team.md).
+3. `/api/v1/matches` ⇒ sospechar del límite antes que del usuario. Comprobar si hay
+   partidas vivas (`orda_matches_active`): si las hay, es un jugador legítimo
+   estrangulado ⇒ subir `MATCH_RATE_LIMIT_MAX` en `.env.production` y recrear la API.
+4. Sin jugadores activos y con 429 persistentes, es tráfico externo.
+
+### H) "`orda_matches_active` marca 0 con jugadores jugando"
+
+El `collect()` del gauge falló y se lo tragó el `catch` (por diseño: no debe tumbar
+`/metrics`). Se registra a nivel **debug**, así que con `LOG_LEVEL=info` no se ve:
+
+```bash
+docker logs baraja-api --since 30m | grep orda_matches_active
+curl -s -o /dev/null -w '%{http_code}\n' https://api.pedrorincon.dev/api/health/ready
+```
+
+Causa típica: Supabase pausado o pool de conexiones agotado. Un 503 en la readiness lo confirma.
