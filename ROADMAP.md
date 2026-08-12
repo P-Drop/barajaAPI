@@ -17,7 +17,7 @@
 - [x] Linter y formateador (ESLint + Prettier).
 - [x] CI básico en GitHub Actions (lint + test + build en cada PR).
 - [x] Tablero de proyecto
-- [ ] Protección de la rama `main` -- aplazada (requiere repo público o GitHub Pro).
+- [x] Protección de la rama `main` (repo público requerido).
 
 ## Fase 1: Core API & MVP de la Baraja ✅
 
@@ -72,22 +72,38 @@
 - [x] Registro de errores centralizado para detectar fallos en vivo.
 - [x] Métricas de uso (¿cuántas barajas se generan al día?).
 
-## Fase 5: Motor de Juego - Solitario Orda ⏳
+## Fase 5: Motor de Juego - Solitario Orda ✅
 
 - **Objetivo**: Evolucionar de un "repartidor de cartas" a una plataforma de juegos con identidad de jugador.
 - **Hito**: [Solitario Orda](docs/ReglasSolitarioOrda.md) (juego original) completamente jugable a través de la API y el frontend.
 
 #### Entregables:
 
-- [ ] Diseño y ADRs del motor: estado de partida, autenticación y política de abandono.
-- [ ] Identidad de jugador sin datos personales: registro y login (nickname anónimo, contraseña, avatar).
-- [ ] Motor de reglas server-authoritative del Solitario Orda (dominio puro, testeado contra el 100 % de las reglas).
-- [ ] Gestor de partidas persistente (crear, mover, abandonar) con bloqueo optimista y TTL de inactividad.
-- [ ] Perfil de jugador y ranking: estrellas con desempate por tiempo; logro _Escalera mecánica_.
-- [ ] Frontend: tablero completamente jugable, comodines y movimiento en bloque incluidos.
-- [ ] Observabilidad del juego: métricas de partidas y jugadores en el panel de Grafana.
+- [x] Diseño y ADRs del motor: estado de partida, autenticación y política de abandono.
+- [x] Identidad de jugador sin datos personales: registro y login (nickname anónimo, contraseña, avatar).
+- [x] Motor de reglas server-authoritative del Solitario Orda (dominio puro, testeado contra el 100 % de las reglas).
+- [x] Gestor de partidas persistente (crear, mover, abandonar) con bloqueo optimista y TTL de inactividad.
+- [x] Perfil de jugador y ranking: estrellas con desempate por tiempo; logro _Escalera mecánica_.
+- [x] Frontend: tablero completamente jugable, comodines y movimiento en bloque incluidos.
+- [x] Observabilidad del juego: métricas de partidas y jugadores en el panel de Grafana.
 
-## Fase 6: Seguridad Ofensiva (Pentest de la Plataforma) ⏳
+## Fase 6: Producto - Frontend Profesional ⏳
+
+- **Objetivo**: convertir un tablero funcional en un producto presentable: identidad visual propia, uso cómodo desde el móvil y accesible para cualquiera.
+- **Hito**: Solitario Orda jugable y accesible (WCAG 2.2 AA) desde el móvil, con una portada que explica el juego a quien llega por primera vez.
+
+#### Entregables:
+
+- [ ] ADR del sistema de diseño: dirección de arte, estrategia de tema y compromiso de accesibilidad.
+- [ ] Sistema de diseño: tokens de color, tipografía y espaciado; tema claro/oscuro y layout global (cabecera, navegación, pie).
+- [ ] Portada del juego y arquitectura de navegación; el catálogo de la baraja queda como demo de la API.
+- [ ] Registro, login y perfil rediseñados y operables sólo con teclado.
+- [ ] Tablero responsive (móvil primero) con objetivos táctiles adecuados.
+- [ ] Interacción de juego: arrastrar y soltar con alternativa accesible, animaciones que respetan `prefers-reduced-motion` y ayuda dentro del juego.
+- [ ] Perfil y ranking con la identidad del jugador (avatar, estrellas, logros) y su posición.
+- [ ] Accesibilidad WCAG 2.2 AA verificada en CI.
+
+## Fase 7: Seguridad Ofensiva (Pentest de la Plataforma) ⏳
 
 - **Objetivo**: Auditar la plataforma propia con mentalidad de atacante, ahora que existe superficie real (autenticación, estado de partidas, ranking), y remediar lo encontrado.
 - **Hito**: Informe de pentest con hallazgos priorizados y remediaciones desplegadas en producción.
@@ -101,7 +117,7 @@
 - [ ] Auditoría de dependencias y de la imagen Docker (npm audit, escáner de imagen).
 - [ ] Informe final con severidades, issues de remediación y verificación del checklist de hardening de los runbooks.
 
-## Fase 7: Plataforma Multijugador ⏳
+## Fase 8: Plataforma Multijugador ⏳
 
 - **Objetivo**: Extender el motor a partidas de N jugadores en tiempo real.
 - **Hito**: Primer juego multijugador clásico (Brisca, Tute, Continental... por definir) jugable en salas.
