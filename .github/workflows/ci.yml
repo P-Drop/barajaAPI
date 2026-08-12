@@ -63,7 +63,7 @@ jobs:
           files: apps/api/coverage/lcov.info
           flags: api
           token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false  
+          fail_ci_if_error: false
 
       - name: Tests de integración
         run: npm run test:integration -w api
@@ -75,7 +75,7 @@ jobs:
         run: npm run test:coverage -w web
 
       - name: Cobertura de la API a Codecov
-        uses: codecov/codecov-action@v5 
+        uses: codecov/codecov-action@v5
         with:
           files: apps/web/coverage/lcov.info
           flags: web
