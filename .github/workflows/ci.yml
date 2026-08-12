@@ -57,6 +57,14 @@ jobs:
       - name: Tests (e2e + cobertura)
         run: npm run test:coverage -w api
 
+      - name: Cobertura de la API a Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: apps/api/coverage/lcov.info
+          flags: api
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
       - name: Tests de integración
         run: npm run test:integration -w api
 
@@ -65,6 +73,14 @@ jobs:
 
       - name: Test del front (con cobertura)
         run: npm run test:coverage -w web
+
+      - name: Cobertura de la API a Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: apps/web/coverage/lcov.info
+          flags: web
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
 
       - name: Build del front
         run: npm run build -w web
