@@ -3,10 +3,10 @@
 ![CI](https://github.com/P-Drop/barajaAPI/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/P-Drop/barajaAPI/graph/badge.svg)](https://codecov.io/gh/P-Drop/barajaAPI)
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-[![Dependabot Updates](https://github.com/P-Drop/barajaAPI/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/USUARIO/REPO/actions/workflows/dependabot/dependabot-updates)
+[![Dependabot Updates](https://github.com/P-Drop/barajaAPI/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/P-Drop/barajaAPI/actions/workflows/dependabot/dependabot-updates)
 
 [![UptimeRobot](https://img.shields.io/uptimerobot/status/m803486950-b1da134f7ead8adf332dddd1)](https://api.pedrorincon.dev/api/health)
-![](https://img.shields.io/badge/work%20in%20progress-F5B727)
+![work in progress](https://img.shields.io/badge/work%20in%20progress-F5B727)
 
 Plataforma de juegos con la baraja española: una **API REST** pública y una **aplicación web** donde jugar al **Solitario Orda**, un solitario original con su propio reglamento.
 
