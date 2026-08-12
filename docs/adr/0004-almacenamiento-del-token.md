@@ -37,6 +37,6 @@ Mitigaciones de XSS asumidas: React escapa el contenido por defecto, no se usa `
 
 ## Consecuencias
 
-- **Ítem de auditoría de la Fase 6 (pentest)**: un XSS podría exfiltrar el token de `sessionStorage`. La mitigación definitiva (cookie `httpOnly` + refresh token) se evalúa entonces, asumiendo el coste de refactor.
+- **Ítem de auditoría de la fase de pentest** (Fase 7 tras la renumeración del ROADMAP; era la 6 cuando se escribió este ADR): un XSS podría exfiltrar el token de `sessionStorage`. La mitigación definitiva (cookie `httpOnly` + refresh token) se evalúa entonces, asumiendo el coste de refactor.
 - La sesión **no se comparte entre pestañas**: abrir una pestaña nueva exige re-login. Contrapartida asumida a cambio de acotar la exposición.
 - El token vive hasta su expiración (≤7 días, ADR-0002), hasta cerrar la pestaña, o hasta `logout`, lo que ocurra antes.

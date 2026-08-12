@@ -26,7 +26,7 @@ applyMove(state: GameState, move: Move): MoveResult
 - `round`: 0 - 45.
 - Estrellas: `starsAvailable` y `starsUsed` (la tabla de puntuación necesita ambas).
 - Logro: `stairwayUnlocked` (bool, habilita el movimiento en bloque en esta partida) y `stairwayBuilding` ( `{ pile, count } | null`, prograso de la maniobra en curso).
-- `moveCount` y `status` (`IN_PROGRESS | WON | LOST`).
+- `moveCount` y `status` (`IN_PROGRESS | WON | LOST`). Ojo: el enum `MatchStatus` de Prisma añade `ABANDONED`, que **no** existe en el dominio — el abandono lo decide la capa de servicio a partir del `Move` `ABANDON` o de la expiración por TTL, no el motor.
 
 ### Achievements
 
@@ -55,8 +55,12 @@ El logro pertenece al perfil: `createGame(rng, achievements: Achievements)` siem
 
 ### Match (Prisma)
 
-`id, userId, state Json, version, status, result, stars, moveCount, startedAt, lastMoveAt, finishedAt`
+`id, userId, state Json, version, status, stars, moveCount, startedAt, lastMoveAt, finishedAt`
 Los campos consultables (status, estrellas, fechas...) se duplican fuera del JSON a propósito: el snapshot no se consulta por dentro con SQL (ADR-0001).
+
+Un **índice único parcial** (`WHERE status = 'IN_PROGRESS'`) garantiza una sola partida
+activa por jugador. Prisma no lo expresa en `schema.prisma`: va como SQL a mano en la
+migración, y el repositorio traduce el `P2002` a `ConflictError` -> 409.
 
 ## Vista del jugador ≠ estado interno
 
@@ -64,15 +68,22 @@ El `GameState` contiene información oculta: el orden de la pila de robo. La API
 
 ## Contrato REST
 
-| **Método** | **Ruta**                    | **Auth** | **Descripción**                                  |
-| ---------- | --------------------------- | -------- | ------------------------------------------------ |
-| POST       | `/api/v1/auth/register`     | -        | Alta de usuario                                  |
-| POST       | `/api/v1/auth/login`        | -        | Devuelve el JWT                                  |
-| POST       | `/api/v1/matches`           | ✔        | Crea partida (el servidor baraja)                |
-| GET        | `/api/v1/matches/:id`       | ✔dueño   | `PlayerView` de la partida                       |
-| POST       | `/api/v1/matches/:id/moves` | ✔dueño   | Aplica un `Move`, devuelve la `PlayerView` nueva |
-| GET        | `/api/v1/profile`           | ✔        | Perfil propio (estrellas, logros, tiempo total)  |
-| GET        | `/api/v1/ranking`           | -        | Estrellas desc, desempate por tiempo asc.        |
+| **Método** | **Ruta**                    | **Auth** | **Descripción**                                      |
+| ---------- | --------------------------- | -------- | ---------------------------------------------------- |
+| POST       | `/api/v1/auth/register`     | -        | Alta de usuario                                      |
+| POST       | `/api/v1/auth/login`        | -        | Devuelve el JWT                                      |
+| GET        | `/api/v1/auth/me`           | ✔        | Usuario del token (rehidrata la sesión del SPA)      |
+| POST       | `/api/v1/matches`           | ✔        | Crea partida (el servidor baraja)                    |
+| GET        | `/api/v1/matches/active`    | ✔        | Partida en curso, o 404 si no hay                    |
+| GET        | `/api/v1/matches/:id`       | ✔dueño   | `PlayerView` de la partida                           |
+| POST       | `/api/v1/matches/:id/moves` | ✔dueño   | Aplica un `Move`, devuelve la `PlayerView` nueva     |
+| GET        | `/api/v1/profile`           | ✔        | Perfil propio (estrellas, logros, tiempo total)      |
+| PATCH      | `/api/v1/profile`           | ✔        | Editar avatar                                        |
+| DELETE     | `/api/v1/profile`           | ✔        | Baja lógica (`isActive: false`, reconfirma password) |
+| GET        | `/api/v1/ranking`           | -        | Estrellas desc, desempate por tiempo asc.            |
+
+> `/matches/active` se monta **antes** que `/matches/:id`: en orden inverso, Express
+> intentaría interpretar `active` como un id y la ruta nunca se alcanzaría.
 
 **Decisiones de contrato**:
 
@@ -80,5 +91,5 @@ El `GameState` contiene información oculta: el orden de la pila de robo. La API
 - El abandono es un `Move` más (`ABANDON`), no un endpoint.
 - Conflicto de bloqueo optimista -> **409**; el cliente recarga la vista y reintenta.
 - Acceso a una partida ajena -> **404** (no se revela que el id existe)
-- No hay "retomar partida": si el TTL venció, cualquier acceso devuelve la partida ya consolidada como derrota (ADR-0003).
+- **Reanudar sí, resucitar no**: `GET /matches/active` devuelve la partida en curso para retomarla tras recargar o cambiar de página (F5-9). Pero si el TTL venció, ese mismo acceso la consolida como derrota y responde 404: nunca se devuelve jugable una partida caducada (ADR-0003).
 - `GET /api/v1/ranking` pagina con `limit` / `offset` y expone nickname, avatar, estrellas y tiempo total.
