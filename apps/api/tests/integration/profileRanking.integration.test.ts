@@ -15,7 +15,7 @@ const register = (nickname: string) =>
   request(app).post('/api/v1/auth/register').send({
     nickname,
     password: PASSWORD,
-    avatar: 'test.png',
+    avatar: '01_oros_saco.webp',
   });
 
 const login = async (nickname: string) => {

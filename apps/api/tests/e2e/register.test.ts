@@ -20,7 +20,7 @@ const fakeUser = {
   nickname: 'userTest',
   nicknameNormalized: 'usertest',
   passwordHash: 'passwordHashTooHard',
-  avatar: 'avatarTest.jpg',
+  avatar: '01_oros_saco.webp',
   stars: 0,
   createdAt: new Date('2026-07-13'),
   totalPlaySeconds: 0,
@@ -31,7 +31,7 @@ const fakeUser = {
 const validBody = {
   nickname: 'userTest',
   password: 'randompassword',
-  avatar: 'avatarTest.jpg',
+  avatar: '01_oros_saco.webp',
 };
 
 // Respuesta fakeUser para 201
@@ -95,6 +95,7 @@ describe('POST /api/v1/auth/register', () => {
     ['avatar vacío', { avatar: '' }],
     ['sin password', { password: undefined }],
     ['password larga', { password: 'a'.repeat(129) }],
+    ['avatar fuera de la lista', { avatar: 'wrongAvatar.png' }],
   ])('%s -> 400', async (_name, override) => {
     const res = await request(app)
       .post('/api/v1/auth/register')

@@ -42,8 +42,21 @@ El estado vive en PostgreSQL como **snapshot completo** en una columna `Json` de
 
 ## Consecuencias
 
-- El JSON no se consulta por dentro con SQL: el estado se carga y se guarda siempre entero. Los campos que el negocio necesita consultar (status, resultado, estrellas, fechas) se **duplican como columnas** de `Match`.
+- El JSON no se consulta por dentro con SQL: el estado se carga y se guarda siempre entero. Los campos que el negocio necesita consultar (status, estrellas, movimientos, fechas) se **duplican como columnas** de `Match`.
 
 - El `GameState` incluye un campo `schemaVersion`: si la forma del estado cambia con partidas vivas, se detecta el snapshot antiguo y la partida se invalida de forma controlada (cancelada, sin computar como derrota). Aceptado para el MVP.
 
 - El cliente debe manejar el 409: recargar la vista de la partida y reintentar.
+
+## Seguimiento (F5-6)
+
+La invalidación por `schemaVersion` se implementó de la forma **más simple posible** y no
+como se anticipa arriba: `readState` (`services/matchService.ts`) lanza un `Error` genérico
+cuando la versión no es la esperada, que el `errorHandler` convierte en **500** y reporta a
+Sentry. No existe un estado "cancelada" en el enum `MatchStatus`, ni se distingue de un
+fallo real del servidor.
+
+Es aceptable mientras `schemaVersion` sea 1 y no haya habido ninguna migración de formato
+—hoy la rama es inalcanzable—, pero deja de serlo en cuanto se cambie la forma del estado
+con partidas vivas: entonces habrá que decidir el estado terminal y devolver un 4xx
+explicativo en lugar de un 500 que ensucia el error tracking.

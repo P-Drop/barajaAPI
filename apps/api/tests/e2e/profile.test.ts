@@ -23,7 +23,7 @@ const fakeUser = {
   nickname: 'userTest',
   nicknameNormalized: 'usertest',
   passwordHash: testPasswordHash,
-  avatar: 'avatarTest.jpg',
+  avatar: '01_oros_saco.webp',
   stars: 33,
   createdAt: new Date('2026-06-01'),
   totalPlaySeconds: 123450,
@@ -84,7 +84,7 @@ describe('PATCH /profile', () => {
   it('avatar válido -> 200 con avatar nuevo', async () => {
     const userNewAvatar = {
       ...fakeUser,
-      avatar: 'newAvatar.png',
+      avatar: '20_copas_jacuzzi.webp',
     };
 
     vi.mocked(userRepository.findById).mockResolvedValueOnce(fakeUser);
@@ -93,13 +93,13 @@ describe('PATCH /profile', () => {
     const res = await request(app)
       .patch('/api/v1/profile')
       .set('Authorization', `Bearer ${token}`)
-      .send({ avatar: 'newAvatar.png' });
+      .send({ avatar: '20_copas_jacuzzi.webp' });
 
     expect(res.status).toBe(200);
-    expect(res.body.avatar).toBe('newAvatar.png');
+    expect(res.body.avatar).toBe('20_copas_jacuzzi.webp');
     expect(userRepository.updateAvatar).toHaveBeenCalledWith(
       userNewAvatar.id,
-      'newAvatar.png',
+      '20_copas_jacuzzi.webp',
     );
   });
 
@@ -118,7 +118,7 @@ describe('PATCH /profile', () => {
   it('sin token -> 401', async () => {
     const res = await request(app)
       .patch('/api/v1/profile')
-      .send({ wrongKey: 'newAvatar.png' });
+      .send({ wrongKey: '20_copas_jacuzzi.webp' });
 
     expect(res.status).toBe(401);
     expect(res.body.error).toBe('Credenciales inválidas');
@@ -157,7 +157,7 @@ describe('DELETE /profile', () => {
   it('sin token -> 401', async () => {
     const res = await request(app)
       .delete('/api/v1/profile')
-      .send({ wrongKey: 'newAvatar.png' });
+      .send({ wrongKey: '20_copas_jacuzzi.webp' });
 
     expect(res.status).toBe(401);
     expect(res.body.error).toBe('Credenciales inválidas');

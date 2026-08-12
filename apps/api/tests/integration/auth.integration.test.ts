@@ -9,7 +9,7 @@ import { prisma } from '../../src/db/prisma.js';
 const testUser = {
   nickname: 'P_Drop',
   password: 'longTestPassword',
-  avatar: 'avatar.png',
+  avatar: '01_oros_saco.webp',
 };
 
 const normalizedNickname = testUser.nickname.toLowerCase();
