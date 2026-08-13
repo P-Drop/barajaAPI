@@ -1,0 +1,1502 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "barajaAPI",
+    "version": "1.0.0",
+    "description": "API REST de la baraja española"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "stars": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalPlaySeconds": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "nickname",
+          "avatar",
+          "stars",
+          "createdAt",
+          "totalPlaySeconds"
+        ]
+      },
+      "MatchView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "IN_PROGRESS",
+              "WON",
+              "LOST",
+              "ABANDONED"
+            ]
+          },
+          "stars": {
+            "type": "number"
+          },
+          "moveCount": {
+            "type": "number"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastMoveAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "view": {
+            "type": "object",
+            "properties": {
+              "schemaVersion": {
+                "type": "number",
+                "enum": [
+                  1
+                ]
+              },
+              "cross": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "corners": {
+                "type": "object",
+                "properties": {
+                  "OROS": {
+                    "type": "number"
+                  },
+                  "COPAS": {
+                    "type": "number"
+                  },
+                  "ESPADAS": {
+                    "type": "number"
+                  },
+                  "BASTOS": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "OROS",
+                  "COPAS",
+                  "ESPADAS",
+                  "BASTOS"
+                ]
+              },
+              "stock": {
+                "type": "object",
+                "properties": {
+                  "count": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "count"
+                ]
+              },
+              "discard": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "hand": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "round": {
+                "type": "number"
+              },
+              "starsAvailable": {
+                "type": "number"
+              },
+              "starsUsed": {
+                "type": "number"
+              },
+              "moveCount": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "IN_PROGRESS",
+                  "WON",
+                  "LOST"
+                ]
+              },
+              "extra": {
+                "type": "array",
+                "items": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "stairwayUnlocked": {
+                "type": "boolean"
+              },
+              "stairwayBuilding": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "pile": {
+                    "type": "number"
+                  },
+                  "count": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "pile",
+                  "count"
+                ]
+              }
+            },
+            "required": [
+              "schemaVersion",
+              "cross",
+              "corners",
+              "stock",
+              "discard",
+              "hand",
+              "round",
+              "starsAvailable",
+              "starsUsed",
+              "moveCount",
+              "status",
+              "extra",
+              "stairwayUnlocked",
+              "stairwayBuilding"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "status",
+          "stars",
+          "moveCount",
+          "startedAt",
+          "lastMoveAt",
+          "finishedAt",
+          "view"
+        ]
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "stars": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalPlaySeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "achievements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "nickname",
+          "avatar",
+          "stars",
+          "createdAt",
+          "totalPlaySeconds",
+          "achievements"
+        ]
+      },
+      "Card": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "suit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "OROS",
+              "COPAS",
+              "ESPADAS",
+              "BASTOS",
+              null
+            ]
+          },
+          "isJoker": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "value",
+          "suit",
+          "isJoker",
+          "name",
+          "image"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/api/v1/deck": {
+      "get": {
+        "summary": "Obtener la baraja (completa o corta)",
+        "tags": [
+          "Deck"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            },
+            "required": false,
+            "name": "short",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cartas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Card"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deck/shuffle": {
+      "get": {
+        "summary": "Obtener la baraja barajada",
+        "tags": [
+          "Deck"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            },
+            "required": false,
+            "name": "short",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cartas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Card"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deck/draw": {
+      "get": {
+        "summary": "Robar N cartas de una baraja barajada",
+        "tags": [
+          "Deck"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            },
+            "required": false,
+            "name": "short",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 1
+            },
+            "required": false,
+            "name": "count",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cartas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Card"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parámetros inválidos o count mayor que la baraja",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "summary": "Registrar un nuevo usuario",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nickname": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9_]{3,20}$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 128
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "enum": [
+                      "01_oros_saco.webp",
+                      "02_oros_bombon.webp",
+                      "03_oros_pirata.webp",
+                      "04_oros_buscador.webp",
+                      "05_copas_bebedor.webp",
+                      "06_copas_trofeo.webp",
+                      "07_copas_brindis.webp",
+                      "08_copas_malabarista.webp",
+                      "09_espadas_mosquetero.webp",
+                      "10_espadas_sardinas.webp",
+                      "11_espadas_escudo.webp",
+                      "12_bastos_rastafari.webp",
+                      "13_bastos_cavernicola.webp",
+                      "14_bastos_lenador.webp",
+                      "15_bastos_florece.webp",
+                      "16_oros_atardecer.webp",
+                      "17_espadas_esquiadora.webp",
+                      "18_bastos_homerun.webp",
+                      "19_espadas_katana.webp",
+                      "20_copas_jacuzzi.webp"
+                    ]
+                  }
+                },
+                "required": [
+                  "nickname",
+                  "password",
+                  "avatar"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Nuevo usuario registrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parámetros inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "El nickname ya está en uso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "Iniciar sesión",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nickname": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "nickname",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login correcto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "user"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parametrós inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiadas peticiones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "summary": "Usuario autenticado actual",
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario del token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matches": {
+      "post": {
+        "summary": "Crear una partida de Solitario Orda (el servidor baraja)",
+        "tags": [
+          "Matches"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Partida creada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchView"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ya tienes una partida en curso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matches/{id}": {
+      "get": {
+        "summary": "Obtener la vista de una partida propia",
+        "tags": [
+          "Matches"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vista de la partida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchView"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Partida no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matches/active": {
+      "get": {
+        "summary": "Obtener la vista de una partida activa",
+        "tags": [
+          "Matches"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vista de la partida recuperada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parámetros inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Partida no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matches/{id}/moves": {
+      "post": {
+        "summary": "Aplicar un movimiento y obtener la vista actualizada",
+        "tags": [
+          "Matches"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "move": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "DRAW"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "PLACE"
+                            ]
+                          },
+                          "from": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "cross"
+                                    ]
+                                  },
+                                  "index": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 4
+                                  }
+                                },
+                                "required": [
+                                  "zone",
+                                  "index"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "corner"
+                                    ]
+                                  },
+                                  "suit": {
+                                    "type": "string",
+                                    "enum": [
+                                      "OROS",
+                                      "COPAS",
+                                      "ESPADAS",
+                                      "BASTOS"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "zone",
+                                  "suit"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "discard"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "zone"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "extra"
+                                    ]
+                                  },
+                                  "index": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  }
+                                },
+                                "required": [
+                                  "zone",
+                                  "index"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "hand"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "zone"
+                                ]
+                              }
+                            ]
+                          },
+                          "to": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "cross"
+                                    ]
+                                  },
+                                  "index": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 4
+                                  }
+                                },
+                                "required": [
+                                  "zone",
+                                  "index"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "corner"
+                                    ]
+                                  },
+                                  "suit": {
+                                    "type": "string",
+                                    "enum": [
+                                      "OROS",
+                                      "COPAS",
+                                      "ESPADAS",
+                                      "BASTOS"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "zone",
+                                  "suit"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "discard"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "zone"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "zone": {
+                                    "type": "string",
+                                    "enum": [
+                                      "extra"
+                                    ]
+                                  },
+                                  "index": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  }
+                                },
+                                "required": [
+                                  "zone",
+                                  "index"
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "from",
+                          "to"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "USE_STAR_EXTRA_SLOT"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "USE_STAR_RECOVER"
+                            ]
+                          },
+                          "cardId": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "cardId"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "MOVE_STACK"
+                            ]
+                          },
+                          "fromPile": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4
+                          },
+                          "cardIndex": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "toPile": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "fromPile",
+                          "cardIndex",
+                          "toPile"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "ABANDON"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "expectedVersion",
+                  "move"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Movimiento aplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Movimiento o parámetros inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Partida no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto de versión o partida expirada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profile": {
+      "get": {
+        "summary": "Perfil propio",
+        "tags": [
+          "Profile"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Perfil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Editar avatar",
+        "tags": [
+          "Profile"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "enum": [
+                      "01_oros_saco.webp",
+                      "02_oros_bombon.webp",
+                      "03_oros_pirata.webp",
+                      "04_oros_buscador.webp",
+                      "05_copas_bebedor.webp",
+                      "06_copas_trofeo.webp",
+                      "07_copas_brindis.webp",
+                      "08_copas_malabarista.webp",
+                      "09_espadas_mosquetero.webp",
+                      "10_espadas_sardinas.webp",
+                      "11_espadas_escudo.webp",
+                      "12_bastos_rastafari.webp",
+                      "13_bastos_cavernicola.webp",
+                      "14_bastos_lenador.webp",
+                      "15_bastos_florece.webp",
+                      "16_oros_atardecer.webp",
+                      "17_espadas_esquiadora.webp",
+                      "18_bastos_homerun.webp",
+                      "19_espadas_katana.webp",
+                      "20_copas_jacuzzi.webp"
+                    ]
+                  }
+                },
+                "required": [
+                  "avatar"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parámetros inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Desactivar cuenta (reconfirma contraseña)",
+        "tags": [
+          "Profile"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Cuenta desactivada"
+          },
+          "400": {
+            "description": "Parámetros inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ranking": {
+      "get": {
+        "summary": "Ranking público de jugadores",
+        "tags": [
+          "Ranking"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "default": 0
+            },
+            "required": false,
+            "name": "offset",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página del ranking",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "offset": {
+                      "type": "number"
+                    },
+                    "entries": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "nickname": {
+                            "type": "string"
+                          },
+                          "avatar": {
+                            "type": "string"
+                          },
+                          "stars": {
+                            "type": "number"
+                          },
+                          "totalPlaySeconds": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "nickname",
+                          "avatar",
+                          "stars",
+                          "totalPlaySeconds"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "total",
+                    "limit",
+                    "offset",
+                    "entries"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parámetros inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {}
+}
