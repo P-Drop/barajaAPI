@@ -1,0 +1,13 @@
+{
+  "name": "openapi-gen",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generador de los tipos del contrato. Vive fuera del monorepo porque openapi-typescript necesita TypeScript 5 y el repo usa TypeScript 7.",
+  "scripts": {
+    "gen": "openapi-typescript ../../apps/api/openapi.json -o ../../apps/web/src/api/generated/schema.d.ts"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5.9.0"
+  }
+}
