@@ -18,7 +18,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@asteasolutions/zod-to-openapi": "^8.5.0",
+    "@asteasolutions/zod-to-openapi": "^9.1.0",
     "@prisma/client": "^6.19.3",
     "@sentry/node": "^10.69.0",
     "argon2": "^0.45.1",
