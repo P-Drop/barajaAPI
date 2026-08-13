@@ -32,9 +32,23 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            tools/openapi-gen/package-lock.json
 
       - name: Instalar dependencias
         run: npm ci
+
+      - name: Instalar el generador del contrato
+        run: npm ci --prefix tools/openapi-gen
+
+      - name: Comprobar que el contrato tipado está sincronizado
+        run: |
+          npm run gen:contract
+          if ! git diff --exit-code apps/api/openapi.json apps/web/src/api/generated/schema.d.ts; then
+            echo "::error::Contrato desfasado: ejecuta 'npm run gen:contract' y commitea el resultado."
+            exit 1
+          fi
 
       - name: Generar cliente Prisma
         run: npx prisma generate

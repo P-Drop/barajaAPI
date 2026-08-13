@@ -42,3 +42,17 @@ updates:
     labels: ['dependencies']
     commit-message:
       prefix: 'chore(deps)'
+
+  # 4 ) Generador del contrato (proyecto npm aislado, con su propio lock)
+  - package-ecosystem: 'npm'
+    directory: '/tools/openapi-gen'
+    schedule:
+      interval: 'weekly'
+    ignore:
+      # TypeScript fijado en 5: openapi-typescript emite el .d.ts con ts.factory
+      # que el compilador nativo de TS 7 no expone
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+    labels: ['dependencies']
+    commit-message:
+      prefix: 'chore(deps)'
