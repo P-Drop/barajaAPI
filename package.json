@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "gen:contract": "npm run gen:openapi -w api && npm run gen --prefix tools/openapi-gen"
   },
   "repository": {
     "type": "git",
