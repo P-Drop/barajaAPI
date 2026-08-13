@@ -2,8 +2,12 @@
 
 > Mantenimiento, despliegue y operación del sistema que sirve
 > `api.pedrorincon.dev`, `baraja.pedrorincon.dev` y `grafana.pedrorincon.dev`.
+
 > **Para vigilancia de seguridad y respuesta ante incidentes, ver
 > [runbook-blue-team.md](./runbook-blue-team.md).**
+
+> **Para actualizaciones y operaciones de mantenimiento estrictamente relacionadas con el SO del servidor, consultar
+> [runbook-os-maintenance.md](./runbook-os-maintenance.md)**.
 
 ## 0. Inventario del sistema
 
@@ -68,6 +72,8 @@ cd ~/baraja && docker compose pull && docker compose up -d  # actualizar el stac
                                                             # (Dependabot NO vigila imágenes del compose)
 docker logs baraja-prometheus --since 24h | grep -i error   # salud del scrape
 ```
+
+Actualización del SO: [runbook-os-maintenance.md](./runbook-os-maintenance.md)
 
 ## 2. Operación del stack de observabilidad
 
