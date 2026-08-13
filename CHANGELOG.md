@@ -5,6 +5,28 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/), y el proyecto sigue [Versionado Semántico](https://semver.org/lang/es):
 **MAYOR** (cambios incompatibles de la API) · **MINOR** (funcionalidad retrocompatible) · **PATCH** (correcciones).
 
+## [1.3.0](https://github.com/P-Drop/barajaAPI/compare/v1.2.0...v1.3.0) (2026-08-13)
+
+
+### Features
+
+* **api:** comodines, escalera mecánica y puntuación del Solitario Orda (F5-5) ([#127](https://github.com/P-Drop/barajaAPI/issues/127)) ([131f1b2](https://github.com/P-Drop/barajaAPI/commit/131f1b20b1f53c4934895a813e73ceca6bc0f85f))
+* **api:** gestor de partidas del Solitario Orda (F5-6) ([#129](https://github.com/P-Drop/barajaAPI/issues/129)) ([eb276e8](https://github.com/P-Drop/barajaAPI/commit/eb276e8c4e5af7f92e7551b990efd12e7f1026c9))
+* **api:** login con JWT y middleware de autenticación (F5-3) ([#122](https://github.com/P-Drop/barajaAPI/issues/122)) ([5f3a1f6](https://github.com/P-Drop/barajaAPI/commit/5f3a1f6dfecdc369cdad5aa801b255d879e0e45d))
+* **api:** métricas del Solitario Orda y rate limiting por jugador (F5-11) ([#143](https://github.com/P-Drop/barajaAPI/issues/143)) ([dac04e9](https://github.com/P-Drop/barajaAPI/commit/dac04e9343adf1b238f1fba72d7b90c4452df1de))
+* **api:** motor de reglas del Solitario Orda (F5-4) ([#124](https://github.com/P-Drop/barajaAPI/issues/124)) ([6460705](https://github.com/P-Drop/barajaAPI/commit/6460705298cd53a6a139fd715be767722f36f210))
+* **api:** perfil del jugador y ranking del Solitario Orda (F5-7) ([#132](https://github.com/P-Drop/barajaAPI/issues/132)) ([b0c103f](https://github.com/P-Drop/barajaAPI/commit/b0c103f87dd8ab118a060007037516ed2d03c8e6))
+* **api:** registro de usuarios con nickname anónimo (F5-2) ([#115](https://github.com/P-Drop/barajaAPI/issues/115)) ([92f7bde](https://github.com/P-Drop/barajaAPI/commit/92f7bdec12e680c063fe920660a5c7bcec5b94d6))
+* **web:** comodines, movimiento en bloque y ranking del Solitario Orda (F5-10) ([#141](https://github.com/P-Drop/barajaAPI/issues/141)) ([446dcfb](https://github.com/P-Drop/barajaAPI/commit/446dcfb5c9a9b526d3ff96579ac97241f322e1dc))
+* **web:** tablero jugable del Solitario Orda (F5-9) ([#139](https://github.com/P-Drop/barajaAPI/issues/139)) ([d9f35bb](https://github.com/P-Drop/barajaAPI/commit/d9f35bb69736df34d727a5db6848ec2edda65b0a))
+
+
+### Bug Fixes
+
+* **api:** mapear errores transitorios de Prisma a 503 y afinar el pooler de conexión ([#142](https://github.com/P-Drop/barajaAPI/issues/142)) ([5fe2ba8](https://github.com/P-Drop/barajaAPI/commit/5fe2ba868cb50ed8348474f98a004e9648895071))
+* **api:** validar el avatar contra la lista cerrada de assets ([8e7b251](https://github.com/P-Drop/barajaAPI/commit/8e7b2519a0627a0ff9c49f4746c81ebdb8ac5b1f))
+* **docs:** usa URL de servidor relativa en el spec OpenAPI ([#130](https://github.com/P-Drop/barajaAPI/issues/130)) ([6b8ce82](https://github.com/P-Drop/barajaAPI/commit/6b8ce820570ca77156b9abbfbdf9f6f06b32252c))
+
 ## [1.2.0](https://github.com/P-Drop/barajaAPI/compare/v1.1.0...v1.2.0) (2026-07-11)
 
 
