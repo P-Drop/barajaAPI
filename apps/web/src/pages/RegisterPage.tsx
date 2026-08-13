@@ -3,6 +3,7 @@ import type { SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { ApiError } from '../api/client';
+import type { Avatar } from '../api/client';
 
 const AVATAR_OPTIONS = [
   '01_oros_saco.webp',
@@ -25,7 +26,7 @@ const AVATAR_OPTIONS = [
   '18_bastos_homerun.webp',
   '19_espadas_katana.webp',
   '20_copas_jacuzzi.webp',
-];
+] as const satisfies readonly Avatar[];
 
 function registerError(err: unknown): string {
   if (err instanceof ApiError) {
@@ -41,12 +42,13 @@ export function RegisterPage() {
   const navigate = useNavigate();
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
-  const [avatar, setAvatar] = useState('');
+  const [avatar, setAvatar] = useState<Avatar | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    if (!avatar) return;
     setError(null);
     setSubmitting(true);
     try {

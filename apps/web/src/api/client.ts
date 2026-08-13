@@ -7,6 +7,7 @@ export type Card = Deck[number];
 
 export type RegisterBody =
   paths['/api/v1/auth/register']['post']['requestBody']['content']['application/json'];
+export type Avatar = RegisterBody['avatar'];
 export type RegisterResponse =
   paths['/api/v1/auth/register']['post']['responses'][201]['content']['application/json'];
 
