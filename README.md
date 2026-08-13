@@ -164,15 +164,16 @@ npm run dev -w web
 
 **Web** (`-w web`):
 
-| Script                  | Qué hace                                  |
-| ----------------------- | ----------------------------------------- |
-| `npm run dev`           | Servidor de desarrollo de Vite            |
-| `npm run build`         | Typecheck + bundle de producción          |
-| `npm test`              | Tests de componentes en jsdom             |
-| `npm run test:coverage` | Tests con los umbrales del CI             |
-| `npm run gen:api`       | Regenera los tipos desde el OpenAPI local |
+| Script                  | Qué hace                         |
+| ----------------------- | -------------------------------- |
+| `npm run dev`           | Servidor de desarrollo de Vite   |
+| `npm run build`         | Typecheck + bundle de producción |
+| `npm test`              | Tests de componentes en jsdom    |
+| `npm run test:coverage` | Tests con los umbrales del CI    |
 
 **Calidad** (desde la raíz): `npm run lint` · `npm run format` · `npm run format:check`
+
+**Contrato** (desde la raíz): `npm run gen:contract` regenera `apps/api/openapi.json` y `apps/web/src/api/generated/schema.d.ts`. **No necesita la API levantada**: el spec sale de los schemas Zod. Una vez, para instalar el generador: `npm ci --prefix tools/openapi-gen`.
 
 ## API
 
@@ -215,7 +216,7 @@ Juego y jugador (`/api/v1`, 🔒 requiere `Authorization: Bearer`):
 
 SPA en React 19 que consume la API pública. Contiene el **tablero jugable del Solitario Orda** (comodines y movimiento en bloque incluidos), registro y login, perfil con logros y ranking, además del catálogo de la baraja que valida los endpoints de la Fase 1.
 
-- **Cliente tipado desde el OpenAPI:** los tipos se generan del spec de la API (`npm run gen:api -w web` → `src/api/generated/schema.d.ts`, versionado), así el contrato front-back no puede desincronizarse en silencio.
+- **Cliente tipado desde el OpenAPI:** el spec se genera de los schemas Zod del backend (`apps/api/openapi.json`) y de ahí salen los tipos del front (`src/api/generated/schema.d.ts`). Los dos están versionados y se regeneran juntos con `npm run gen:contract`, y **el CI falla si alguno queda desfasado**: un cambio de contrato aparece siempre en el diff del PR, que es donde debe discutirse.
 
 - **Sesión:** el token se guarda en `sessionStorage` y se accede sólo desde la capa de autenticación ([ADR-0004](docs/adr/0004-almacenamiento-del-token.md)).
 
@@ -303,6 +304,8 @@ apps/
 │    │    ├─ migrations/        # migraciones (forward-only)
 │    │    ├─ schema.prisma      # modelo de datos (Card, User, Match)
 │    │    └─ seed.ts            # siembra las 50 cartas
+│    ├─── scripts/
+│    │    └─ generate-openapi.ts  # escribe el spec sin levantar el servidor
 │    ├─── src/
 │    │    ├─ config/            # env (Zod), logger, métricas, JWT, Sentry
 │    │    ├─ controllers/       # handlers HTTP
@@ -319,10 +322,11 @@ apps/
 │    │    ├─ validators/        # validación de entrada
 │    │    ├─ app.ts             # configuración de Express
 │    │    └─ server.ts          # arranque
-│    └─── tests/
-│         ├─ e2e/               # mockeados (rápidos, sin BD)
-│         ├─ integration/       # contra Postgres real
-│         └─ unit/              # motor de reglas
+│    ├─── tests/
+│    │    ├─ e2e/               # mockeados (rápidos, sin BD)
+│    │    ├─ integration/       # contra Postgres real
+│    │    └─ unit/              # motor de reglas
+│    └─ openapi.json            # contrato generado (versionado; lo consume el front)
 └─── web/
      ├─── src/
      │    ├─ api/               # cliente fetch tipado + tipos del OpenAPI
@@ -338,16 +342,22 @@ apps/
           ├─── avatars/         # 20 avatares de jugador
           ├─── achievements/    # insignias de logros
           └─── textures/        # texturas de la UI
+
 docs/
 ├─── adr/                       # decisiones de arquitectura y sus alternativas
 ├─── design/                    # diseño del motor del Solitario Orda
 └─── ReglasSolitarioOrda.md     # reglas canónicas del juego
+
 deploy/
 ├─── docs/                      # runbooks y política de caché HTTP
 ├─── nginx/                     # server blocks (copia versionada)
 ├─── prometheus/                # configuración del scrape
 ├─── grafana/provisioning/      # dashboard y alertas como código
 └─── docker-compose.prod.yml    # compose de producción del VPS
+
+tools/
+└─── openapi-gen/               # generador de tipos con npm propio (exige TypeScript 5)
+
 ```
 
 ## Tests
