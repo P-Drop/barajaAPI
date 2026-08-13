@@ -58,7 +58,7 @@ jobs:
         run: npm run test:coverage -w api
 
       - name: Cobertura de la API a Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: apps/api/coverage/lcov.info
           flags: api
@@ -75,7 +75,7 @@ jobs:
         run: npm run test:coverage -w web
 
       - name: Cobertura de la API a Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: apps/web/coverage/lcov.info
           flags: web
