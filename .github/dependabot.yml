@@ -18,6 +18,10 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+      # dotenv-expand fijado en 13: la v1000 ejecuta $(comandos) al expandir el .env
+      # y embebe @dotenvx/primitives. El repositorio no usa ninguna de las dos.
+      - dependency-name: 'dotenv-expand'
+        update-types: ['version-update:semver-major']
     labels: ['dependencies']
     commit-message:
       prefix: 'chore(deps)'
