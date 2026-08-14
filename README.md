@@ -6,7 +6,7 @@
 [![Dependabot Updates](https://github.com/P-Drop/barajaAPI/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/P-Drop/barajaAPI/actions/workflows/dependabot/dependabot-updates)
 
 [![UptimeRobot](https://img.shields.io/uptimerobot/status/m803486950-b1da134f7ead8adf332dddd1)](https://api.pedrorincon.dev/api/health)
-![work in progress](https://img.shields.io/badge/work%20in%20progress-F5B727)
+![WIP](https://img.shields.io/badge/WIP-F5B727)
 
 Plataforma de juegos con la baraja española: una **API REST** pública y una **aplicación web** donde jugar al **Solitario Orda**, un solitario original con su propio reglamento.
 
@@ -148,6 +148,22 @@ npm run dev -w api
 # 4. Web en http://localhost:5173
 npm run dev -w web
 ```
+
+### Hooks de git
+
+`npm ci` los instala solo (script `prepare` → husky).
+
+| Hook         | Qué ejecuta                                                         | Coste |
+| ------------ | ------------------------------------------------------------------- | ----- |
+| `pre-commit` | `lint-staged`: ESLint `--fix` + Prettier `--write` sobre el _stage_ | < 1 s |
+| `pre-push`   | El pipeline del CI que no necesita base de datos                    | ~8 s  |
+
+El `pre-push` requiere el generador del contrato instalado una vez:
+`npm ci --prefix tools/openapi-gen`. Los tests de integración quedan fuera a propósito
+(necesitan Docker levantado y sembrado).
+
+`--no-verify` salta el hook: escape consciente para un WIP, no la vía habitual. **El CI
+sigue siendo la autoridad**; los hooks solo protegen esta máquina.
 
 ## Scripts
 
