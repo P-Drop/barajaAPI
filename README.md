@@ -5,14 +5,14 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 [![Dependabot Updates](https://github.com/P-Drop/barajaAPI/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/P-Drop/barajaAPI/actions/workflows/dependabot/dependabot-updates)
 
-[![UptimeRobot](https://img.shields.io/uptimerobot/status/m803486950-b1da134f7ead8adf332dddd1)](https://api.pedrorincon.dev/api/health)
+[![UptimeRobot](https://img.shields.io/uptimerobot/status/m803486950-b1da134f7ead8adf332dddd1)](https://baraja.pedrorincon.dev/api/health)
 ![WIP](https://img.shields.io/badge/WIP-F5B727)
 
 Plataforma de juegos con la baraja española: una **API REST** pública y una **aplicación web** donde jugar al **Solitario Orda**, un solitario original con su propio reglamento.
 
 - 🎮 **Jugar:** [https://baraja.pedrorincon.dev/play](https://baraja.pedrorincon.dev/play) - _Requiere login_
 - 🃏 **Catálogo:** [https://baraja.pedrorincon.dev/](https://baraja.pedrorincon.dev)
-- 🔌 **API:** [https://api.pedrorincon.dev](https://api.pedrorincon.dev) — Swagger en [/api/docs](https://api.pedrorincon.dev/api/docs)
+- 🔌 **API:** Swagger en [https://baraja.pedrorincon.dev/api/docs](https://baraja.pedrorincon.dev/api/docs) — salud en [/api/health](https://baraja.pedrorincon.dev/api/health)
 - 🗺️ **Planificación (estado y siguientes fases):** [ROADMAP](./ROADMAP.md)
 
 Monorepo (npm workspaces) con dos aplicaciones: `apps/api` (Express + Prisma) y `apps/web` (React + Vite).
@@ -107,24 +107,24 @@ npm install
 
 **API** (`apps/api/.env`):
 
-| Variable                     | Descripción                                                    |
-| ---------------------------- | -------------------------------------------------------------- |
-| `DATABASE_URL`               | Cadena de conexión a PostgreSQL                                |
-| `PORT`                       | Puerto del servidor (3000)                                     |
-| `NODE_ENV`                   | development / production / test                                |
-| `LOG_LEVEL`                  | Nivel de pino (info por defecto)                               |
-| `CORS_ORIGIN`                | Origen permitido; `*` en dev, lista por comas en producción    |
-| `JWT_SECRET`                 | Secreto de firma HS256 (mínimo 32 caracteres)                  |
-| `JWT_EXPIRES_IN`             | Vigencia del token (7d)                                        |
-| `MATCH_TTL_MINUTES`          | Inactividad tras la cual una partida se da por abandonada (15) |
-| `RATE_LIMIT_MAX`             | Peticiones por IP y ventana en la API general (100)            |
-| `RATE_LIMIT_WINDOW_MS`       | Ventana general en ms (900000 = 15 min)                        |
-| `AUTH_RATE_LIMIT_MAX`        | Límite más estricto para `/auth` (10 por ventana general)      |
-| `MATCH_RATE_LIMIT_WINDOW_MS` | Ventana propia de las partidas en ms (60000 = 1 min)           |
-| `MATCH_RATE_LIMIT_MAX`       | Peticiones por **jugador** y minuto (120)                      |
-| `MATCH_IP_RATE_LIMIT_MAX`    | Peticiones por **IP** y minuto (300)                           |
-| `SENTRY_DSN`                 | DSN del proyecto; vacío deshabilita Sentry                     |
-| `SENTRY_RELEASE`             | Release reportada (el CD la fija al SHA del commit)            |
+| Variable                     | Descripción                                                                                                |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`               | Cadena de conexión a PostgreSQL                                                                            |
+| `PORT`                       | Puerto del servidor (3000)                                                                                 |
+| `NODE_ENV`                   | development / production / test                                                                            |
+| `LOG_LEVEL`                  | Nivel de pino (info por defecto)                                                                           |
+| `CORS_ORIGIN`                | Origen permitido; `*` en dev. En producción front y API comparten origen, así que solo actúa en desarrollo |
+| `JWT_SECRET`                 | Secreto de firma HS256 (mínimo 32 caracteres)                                                              |
+| `JWT_EXPIRES_IN`             | Vigencia del token (7d)                                                                                    |
+| `MATCH_TTL_MINUTES`          | Inactividad tras la cual una partida se da por abandonada (15)                                             |
+| `RATE_LIMIT_MAX`             | Peticiones por IP y ventana en la API general (100)                                                        |
+| `RATE_LIMIT_WINDOW_MS`       | Ventana general en ms (900000 = 15 min)                                                                    |
+| `AUTH_RATE_LIMIT_MAX`        | Límite más estricto para `/auth` (10 por ventana general)                                                  |
+| `MATCH_RATE_LIMIT_WINDOW_MS` | Ventana propia de las partidas en ms (60000 = 1 min)                                                       |
+| `MATCH_RATE_LIMIT_MAX`       | Peticiones por **jugador** y minuto (120)                                                                  |
+| `MATCH_IP_RATE_LIMIT_MAX`    | Peticiones por **IP** y minuto (300)                                                                       |
+| `SENTRY_DSN`                 | DSN del proyecto; vacío deshabilita Sentry                                                                 |
+| `SENTRY_RELEASE`             | Release reportada (el CD la fija al SHA del commit)                                                        |
 
 **Infraestructura local** (`.env` de la raíz): `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` y `POSTGRES_PORT` para el contenedor de Postgres.
 
@@ -224,7 +224,7 @@ Juego y jugador (`/api/v1`, 🔒 requiere `Authorization: Bearer`):
 | DELETE | 🔒 `/profile`           | Baja lógica (reconfirma la contraseña)         |
 | GET    | `/ranking`              | Ranking paginado (`limit`, `offset`)           |
 
-📖 Documentación interactiva (Swagger): http://localhost:3000/api/docs
+📖 Documentación interactiva (Swagger): https://baraja.pedrorincon.dev/api/docs
 
 ## Frontend (`apps/web`)
 
@@ -248,7 +248,7 @@ de Basquetteur (Wikimedia Commons), bajo [CC BY-SA 3.0](https://creativecommons.
 
 ## Producción
 
-Arquitectura dual: la API en **https://api.pedrorincon.dev** y la web en **https://baraja.pedrorincon.dev**.
+La SPA y la API comparten origen: **https://baraja.pedrorincon.dev** sirve los estáticos y **`/api`** hace de proxy inverso al contenedor de la API. Un solo origen, sin CORS en producción.
 
 ```mermaid
 flowchart TB
@@ -261,7 +261,7 @@ flowchart TB
         PROM["Prometheus<br>127.0.0.1:9090"]
         GRAF["Grafana<br>127.0.0.1:3001"]
         NG -->|baraja.pedrorincon.dev| FE
-        NG -->|api.pedrorincon.dev| API
+        NG -->|baraja.pedrorincon.dev/api| API
         NG -->|grafana.pedrorincon.dev<br>basic auth| GRAF
         PROM -->|scrape /metrics 30 s| API
         GRAF -->|datasource| PROM
@@ -279,7 +279,7 @@ flowchart TB
     end
 ```
 
-- **Infra:** VPS (clouding.io) con Docker; **Nginx** como reverse proxy y **Certbot** (HTTPS con auto-renovación) en ambos dominios.
+- **Infra:** VPS (clouding.io) con Docker; **Nginx** como reverse proxy y **Certbot** (HTTPS con auto-renovación).
 - **Base de datos:** Supabase (PostgreSQL gestionado).
 - **Despliegue continuo:** cada merge a `main` dispara `cd.yml` → tests → imagen en GHCR → migraciones → deploy por SSH y sincronización de los estáticos por rsync.
 - **Versionado:** release-please mantiene un Release PR; al mergearlo publica tag, CHANGELOG y release.
@@ -310,6 +310,7 @@ Cada petición y cada error son trazables de extremo a extremo:
 - **Errores centralizados** (Sentry): la API reporta los 500 no controlados con el request-id y `release` = SHA del commit; el front reporta crashes con stack traces simbolicados.
 
 Operación: [runbook-operations](deploy/docs/runbook-operations.md) · Seguridad: [runbook-blue-team](deploy/docs/runbook-blue-team.md) · Base de datos: [runbook-db](deploy/docs/runbook-db.md).
+Mantenimiento SO: [runbook-os-maintenance](deploy/docs/runbook-os-maintenance.md).
 
 ## Estructura del proyecto
 
