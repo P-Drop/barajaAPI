@@ -261,7 +261,7 @@ flowchart TB
         PROM["Prometheus<br>127.0.0.1:9090"]
         GRAF["Grafana<br>127.0.0.1:3001"]
         NG -->|baraja.pedrorincon.dev| FE
-        NG -->|baraja.pedrorincon.dev| API
+        NG -->|baraja.pedrorincon.dev/api| API
         NG -->|grafana.pedrorincon.dev<br>basic auth| GRAF
         PROM -->|scrape /metrics 30 s| API
         GRAF -->|datasource| PROM
